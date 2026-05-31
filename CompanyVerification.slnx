@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="CompanyVerification.Api/CompanyVerification.Api.csproj" />
+  <Project Path="CompanyVerification.Core/CompanyVerification.Core.csproj" />
+  <Project Path="CompanyVerification.Tests/CompanyVerification.Tests.csproj" />
+</Solution>
