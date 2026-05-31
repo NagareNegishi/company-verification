@@ -1,0 +1,40 @@
+# IDE/Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.db
+*.db-shm
+*.db-wal
+
+# Environment
+.env
+.env.*.local
+
+# Logs
+*.log
+
+# Docker
+docker-compose.override.yml
+
+# Development notes and sample files
+notes/
+
+# Local configuration files from Backend
+appsettings.Development.json
+
+# Claude code
+creds.json
+.claude/skills/owasp-scan/findings.json
+.github/drafts/
