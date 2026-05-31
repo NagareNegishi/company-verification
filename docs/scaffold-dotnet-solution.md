@@ -5,19 +5,28 @@ Run from the repo root (`/workspaces/company-verification`).
 
 ## Solution format
 
-Uses `.slnx` (XML-based solution format, .NET 10+) instead of the legacy `.sln` format.
+Uses `.slnx` (XML-based solution format) instead of the legacy `.sln` format.
 Reasons: human-readable, no GUIDs, clean git diffs.
-→ Official: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new-sdk-templates#slnx
+
+**In .NET 10, `dotnet new sln` creates `.slnx` by default** — this is a breaking change from .NET 9.
+There is no `dotnet new slnx` template. The standard `dotnet new sln` command is all you need.
+To get the old format explicitly: `dotnet new sln --format sln`
+
+→ Official (breaking change note): https://learn.microsoft.com/en-us/dotnet/core/compatibility/sdk/10.0/dotnet-new-sln-slnx-default
+→ Official (dotnet sln): https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-sln
 
 ## Commands
 
 ### 1. Create the solution file
 
 ```
-dotnet new slnx -n CompanyVerification
+dotnet new sln -n CompanyVerification
 ```
 
-Generates `CompanyVerification.slnx` in the current directory.
+Generates `CompanyVerification.slnx` in the current directory (`.NET 10` default).
+
+`-n` — name of the solution file. Without it, defaults to the current directory name
+(`company-verification`, kebab-case) — not what we want.
 
 ### 2. Scaffold the three projects
 
@@ -27,14 +36,19 @@ dotnet new webapi --use-controllers -o CompanyVerification.Api
 dotnet new xunit   -o CompanyVerification.Tests
 ```
 
+`-o` — output directory. Creates the project in a named subdirectory rather than
+dumping files into the repo root.
+
+`--use-controllers` — opts into traditional controller-based routing. .NET 8+ defaults
+to Minimal APIs (routing defined inline in `Program.cs`). Controllers are chosen here
+because the structure is explicit: one class per resource, visible in the file tree.
+
 | Project | Template | Why |
 |---|---|---|
 | `Core` | `classlib` | No framework dependency — publishable as a NuGet package |
 | `Api` | `webapi --use-controllers` | HTTP front door; controllers keep routing explicit |
 | `Tests` | `xunit` | Conformance suite + unit tests |
 
-`--use-controllers` opt-in: .NET 8+ defaults to Minimal API style.
-Controllers are chosen here because the routing structure is explicit and familiar for a learning context.
 → Official (webapi): https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api
 → Official (classlib): https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-new-sdk-templates#classlib
 → Official (xunit): https://xunit.net/docs/getting-started/v3/cmdline
