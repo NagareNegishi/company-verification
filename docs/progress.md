@@ -32,12 +32,11 @@ and decisions made along the way. Update this file as work progresses.
 ## Next
 
 1. **Define Core contract** — `IVerificationProvider` interface + `CompanyCandidate` type in `Core`
-2. **Define store contract** — `IVerificationStore` + `InMemoryVerificationStore` in `Core`
-3. **Delete boilerplate** — remove generated placeholder files (`Class1.cs`, `WeatherForecast.cs`, etc.)
-4. **NZBN adapter** — first native adapter; add `api.business.govt.nz` to firewall script
-5. **Conformance YAML** — adapter declaration file for NZBN
-6. **Conformance test suite** — standard battery in `Tests`
-7. **API controller** — thin HTTP wrapper over `IVerificationProvider`
+2. **Delete boilerplate** — remove generated placeholder files (`Class1.cs`, `WeatherForecast.cs`, etc.)
+3. **NZBN adapter** — first native adapter; add `api.business.govt.nz` to firewall script
+4. **Conformance YAML** — adapter declaration file for NZBN
+5. **Conformance test suite** — standard battery in `Tests`
+6. **API controller** — thin HTTP wrapper over `IVerificationProvider`
 
 ---
 
@@ -47,7 +46,8 @@ and decisions made along the way. Update this file as work progresses.
 |---|---|---|
 | Solution format | `.slnx` | .NET 10 default; human-readable, no GUIDs |
 | API style | Controllers | Explicit routing, easier to navigate while learning |
-| Database (dev) | `InMemoryVerificationStore` only | No PostgreSQL until `IVerificationStore` has a Neon implementation |
+| State / monitoring | Out of scope | Service answers "active right now" only; change detection is a separate concern |
+| Database | None | No store layer — service is stateless |
 | NZ adapter | Native NZBN | OpenRegistry NZ implementation is undocumented — black box for primary market |
 | Fallback | OpenRegistry (candidate) | ToS verified; swappable if needed |
 | MCP server | Not finalized | Defer until a real agent consumer exists |

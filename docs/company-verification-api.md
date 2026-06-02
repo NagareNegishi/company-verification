@@ -67,25 +67,19 @@ Registry "active" status means the entity is **legally alive** (and for Australi
 - The fallback is optional and swappable — configured per deployment, never hard-coded.
 - A conformance test suite and declaration file gate every adapter.
 
-### Normalized status enum
+### Registry status reference
 
-Reconciled against the actual status vocabularies of NZ, AU, and UK registries. The enum is confirmed:
+Not a C# type — reference for adapter authors and conformance declarations. Each adapter's YAML must declare which of its registry's exact status strings it treats as active (included) and which it excludes.
 
-`ACTIVE`, `CANCELLED`, `REMOVED`, `IN_LIQUIDATION`, `UNKNOWN`
-
-**Registry mappings (for reference and adapter declaration use):**
-
-| Enum value | NZ (NZBN) | AU (ABR) | UK (Companies House) |
+| Status category | NZ (NZBN) | AU (ABR) | UK (Companies House) |
 |---|---|---|---|
-| `ACTIVE` | `Registered` | `Active` | `active`, `registered` |
-| `CANCELLED` | — | `Cancelled`, `Not Active` | `voluntary-arrangement` |
-| `REMOVED` | `Removed`, `Deregistered` | — | `dissolved`, `removed`, `converted-closed` |
-| `IN_LIQUIDATION` | — | — | `liquidation`, `receivership`, `administration` |
-| `UNKNOWN` | anything else | anything else | anything else |
+| **Active (include)** | `Registered` | `Active` | `active`, `registered` |
+| Cancelled | — | `Cancelled`, `Not Active` | `voluntary-arrangement` |
+| Removed | `Removed`, `Deregistered` | — | `dissolved`, `removed`, `converted-closed` |
+| In liquidation | — | — | `liquidation`, `receivership`, `administration` |
+| Other | anything else | anything else | anything else |
 
-UK is included for future reference — it is not MVP scope. Each adapter's YAML declaration must explicitly state its own mapping using the registry's exact status strings.
-
-Note: the normalized enum is used for the re-check/monitoring layer. The `Search` contract does not return the enum — it filters by it internally (only `ACTIVE` entities are returned). The enum surfaces in stored records and monitoring logic.
+UK is included for future reference — it is not MVP scope.
 
 ### Data sources
 
@@ -115,16 +109,6 @@ Note: the normalized enum is used for the re-check/monitoring layer. The `Search
   - Treat it as *a* configurable fallback, swappable for OpenCorporates or another provider.
 
 **Note on calling the fallback:** the verification service calling OpenRegistry is a plain MCP client reading JSON — **no LLM, no token cost.** Token cost only arises if *this* service is later exposed as an MCP server that an AI agent calls.
-
-### Re-check / monitoring design
-
-Active status must be re-verified on a recurring basis, **at least every 6 months** (a floor, not a target). Prefer push/notification over blind polling where the source supports it.
-
-- Store the **canonical registry id** at verification time (NZBN / NZ company number; ABN/ACN), not the name.
-- **NZ:** use ETags (`If-None-Match`) and/or a watchlist for near-real-time change detection; the 6-month timer is just a backstop.
-- **AU:** no push mechanism — re-query on schedule and compare the returned status + status date. Daily-updated source allows more frequent polling if wanted.
-- Normalize each registry's status into the enum; cache last status + `last_checked` per company.
-- Storage is behind `IVerificationStore` (defined in Core). Dev and test use `InMemoryVerificationStore`. The production implementation (Neon/PostgreSQL) is added when re-check/monitoring is built. Whether an adapter uses the store at all is the adapter's decision — adapters with native re-check support (e.g. NZBN ETags) may not need it.
 
 ### Front doors (output interfaces)
 
