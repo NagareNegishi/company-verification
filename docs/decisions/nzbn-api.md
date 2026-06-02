@@ -95,14 +95,46 @@ Source: [Procuret/nzbn-python — nzbn/entity_status.py](https://github.com/Proc
 
 ---
 
-## Company Entity Type Codes
+## Entity Type Codes — Employer Verification Scope
 
-The adapter must keep only these two `entityTypeCode` values.
-All others (trusts, sole traders, partnerships, govt bodies, societies) are not companies.
+The adapter's purpose is to identify any registered, active NZ entity that can
+legitimately offer employment. This is broader than "company" — it includes
+government bodies, partnerships with separate legal identity, societies,
+co-operatives, and trust structures.
 
-| Code | Meaning |
-|------|---------|
-| `NZCompany` | New Zealand limited company ✓ — **keep** |
-| `OverseasCompany` | Overseas company registered in NZ ✓ — **keep** |
+### Keep — confirmed legal entities that can employ
 
-Source: [Procuret/nzbn-python — nzbn/entity_type.py](https://github.com/Procuret/nzbn-python/blob/master/nzbn/entity_type.py)
+| Code | Entity | Governing legislation / register |
+|------|--------|----------------------------------|
+| `NZCompany` | NZ limited company | [Companies Act 1993](https://www.legislation.govt.nz/act/public/1993/0105/latest/DLM319576.html) |
+| `LTD` | Limited company — variant designation on the same register | [Companies Act 1993](https://www.legislation.govt.nz/act/public/1993/0105/latest/DLM319576.html) |
+| `ULTD` | Unlimited company — shareholders carry full liability; rare | [Companies Act 1993](https://www.legislation.govt.nz/act/public/1993/0105/latest/DLM319576.html) |
+| `COOP` | Co-operative company — member-owned (e.g. Fonterra, Farmlands) | [Companies Act 1993 Part 3](https://www.legislation.govt.nz/act/public/1993/0105/latest/DLM319576.html) |
+| `OverseasCompany` | Foreign company registered to operate in NZ | [Companies Act 1993 Part 18](https://www.legislation.govt.nz/act/public/1993/0105/latest/DLM319576.html) |
+| `ASIC` | Australian company (ASIC-regulated) registered in NZ | [Companies Register — overseas companies](https://companies-register.companiesoffice.govt.nz/help-centre/before-you-start-a-company/choosing-a-type-of-company-for-your-business/) |
+| `NON_ASIC` | Non-Australian overseas company registered in NZ | [Companies Register — overseas companies](https://companies-register.companiesoffice.govt.nz/help-centre/before-you-start-a-company/choosing-a-type-of-company-for-your-business/) |
+| `LimitedPartnershipNz` | NZ limited partnership — used by law firms, accountants, investment funds | [Limited Partnerships Act 2008](https://lp-register.companiesoffice.govt.nz/) |
+| `LimitedPartnershipOverseas` | Overseas limited partnership registered in NZ | [Limited Partnerships Act 2008](https://lp-register.companiesoffice.govt.nz/) |
+| `IncorporatedSociety` | Member-run non-profit (sports clubs, professional bodies) | [Incorporated Societies Act 2022](https://is-register.companiesoffice.govt.nz/) |
+| `IndustrialAndProvidentSociety` | Co-operative for members (e.g. rural supply co-ops) | [Industrial and Provident Societies Act 1908](https://www.companiesoffice.govt.nz/all-registers/other-entities/) |
+| `BuildingSociety` | Mutual lender | [Building Societies Act 1965](https://www.companiesoffice.govt.nz/all-registers/other-entities/) |
+| `CreditUnion` | Member-owned financial institution | [Friendly Societies and Credit Unions Act 1982](https://www.companiesoffice.govt.nz/all-registers/other-entities/) |
+| `FriendlySociety` | Mutual benefit society | [Friendly Societies and Credit Unions Act 1982](https://www.companiesoffice.govt.nz/all-registers/other-entities/) |
+| `CharitableTrust` | Charitable trust board — NFP sector | [Charitable Trusts Act 1957 / Charitable Trusts Register](https://ct-register.companiesoffice.govt.nz/) |
+| `Trust` | General trust — private arrangement, no dedicated register | No specific register; NZ trusts governed by Trusts Act 2019 |
+| `Trading_Trust` | Trust that conducts a business | No specific register; NZ trusts governed by Trusts Act 2019 |
+| `SpecialBody` / `SpecialBodies` | Smaller statutory bodies created by specific legislation | [Special and Other Bodies Register](https://www.companiesoffice.govt.nz/all-registers/other-entities/) |
+| `GovtCentral` | Central government agencies (Police, IRD, MSD, MBIE, etc.) | [NZBN Act 2016 — public sector entities](https://www.legislation.govt.nz/act/public/2016/0016/latest/whole.html) |
+| `GovtLocal` | Local councils | [NZBN Act 2016 — public sector entities](https://www.legislation.govt.nz/act/public/2016/0016/latest/whole.html) |
+| `GovtEdu` | Universities, polytechnics, schools | [NZBN Act 2016 — public sector entities](https://www.legislation.govt.nz/act/public/2016/0016/latest/whole.html) |
+| `GovtOther` | Crown entities, state-owned enterprises | [NZBN Act 2016 — public sector entities](https://www.legislation.govt.nz/act/public/2016/0016/latest/whole.html) |
+
+### Exclude — with reasons
+
+| Code | Why excluded | Source |
+|------|-------------|--------|
+| `SoleTrader` / `Sole_Trader` | No separate legal entity — the individual IS the business; nothing to verify as an employer distinct from the person | [NZBN — sole traders](https://www.nzbn.govt.nz/get-an-nzbn/get-your-nzbn/) |
+| `Partnership` | No separate legal identity under NZ law — partners trade jointly as individuals | [Partnership Act 1908](https://www.legislation.govt.nz/act/public/1908/0139/latest/whole.html) |
+| `B`, `I`, `D`, `F`, `N`, `S`, `T`, `Y`, `Z`, `G` | Legacy or residual codes with no official definition found — cannot confirm what entity they represent or whether they can employ | Observed in [Procuret/nzbn-python — entity_type.py](https://github.com/Procuret/nzbn-python/blob/master/nzbn/entity_type.py); no official documentation located |
+
+Source for full code list: [Procuret/nzbn-python — nzbn/entity_type.py](https://github.com/Procuret/nzbn-python/blob/master/nzbn/entity_type.py)
