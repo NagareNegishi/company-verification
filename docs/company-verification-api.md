@@ -47,7 +47,18 @@ Registry "active" status means the entity is **legally alive** (and for Australi
 
 **Method:** `Search(name, country)` — the single operation every adapter must implement.
 
-**Input:** company name string, country code.
+**Input:** company name string (partial or full name accepted; case-insensitive matching is handled by the registry), country code.
+
+**Input validation rules (enforced in the contract, not just the HTTP layer):**
+- Name must not be null, empty, or whitespace — `ArgumentException` thrown.
+- Name must not exceed 200 characters — `ArgumentException` thrown.
+  (Longest real names are ~100 chars; 200 gives headroom without accepting abuse.)
+- Name must contain no control characters (`\0`, `\r`, `\n`, `\t`, or any character below ASCII 32) — `ArgumentException` thrown. These have no place in a company name and can cause HTTP header injection in outbound requests.
+- HTML angle brackets (`<` and `>`) are rejected as defense in depth — no real company name requires them.
+- Unicode is permitted — NZ/AU company names include Māori characters (ā, ō) and other scripts.
+- Country code must not be null or empty — `ArgumentException` thrown.
+
+Validation lives in the contract so it applies regardless of transport (HTTP, library, direct test). The HTTP controller adds its own layer that returns `400 Bad Request` before the contract is reached.
 
 **Output:** `List<CompanyCandidate>` where each candidate contains:
 - Registry-native ID (format is registry-specific — NZBN is 13-digit, ABN is 11-digit, etc.)
