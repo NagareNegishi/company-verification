@@ -47,7 +47,18 @@ Registry "active" status means the entity is **legally alive** (and for Australi
 
 **Method:** `Search(name, country)` — the single operation every adapter must implement.
 
-**Input:** company name string, country code.
+**Input:** company name string (partial or full name accepted; case-insensitive matching is handled by the registry), country code.
+
+**Input validation rules (enforced in the contract, not just the HTTP layer):**
+- Name must not be null, empty, or whitespace — `ArgumentException` thrown.
+- Name must not exceed 200 characters — `ArgumentException` thrown.
+  (Longest real names are ~100 chars; 200 gives headroom without accepting abuse.)
+- Name must contain no control characters (`\0`, `\r`, `\n`, `\t`, or any character below ASCII 32) — `ArgumentException` thrown. These have no place in a company name and can cause HTTP header injection in outbound requests.
+- HTML angle brackets (`<` and `>`) are rejected as defense in depth — no real company name requires them.
+- Unicode is permitted — NZ/AU company names include Māori characters (ā, ō) and other scripts.
+- Country code must be a two-letter ISO 3166-1 alpha-2 code (e.g. `"NZ"`, `"AU"`), accepted case-insensitively and normalized to uppercase internally — `ArgumentException` thrown if null, empty, or not exactly two letters.
+
+Validation lives in the contract so it applies regardless of transport (HTTP, library, direct test). The HTTP controller adds its own layer that returns `400 Bad Request` before the contract is reached.
 
 **Output:** `List<CompanyCandidate>` where each candidate contains:
 - Registry-native ID (format is registry-specific — NZBN is 13-digit, ABN is 11-digit, etc.)
@@ -67,25 +78,19 @@ Registry "active" status means the entity is **legally alive** (and for Australi
 - The fallback is optional and swappable — configured per deployment, never hard-coded.
 - A conformance test suite and declaration file gate every adapter.
 
-### Normalized status enum
+### Registry status reference
 
-Reconciled against the actual status vocabularies of NZ, AU, and UK registries. The enum is confirmed:
+Not a C# type — reference for adapter authors and conformance declarations. Each adapter's YAML must declare which of its registry's exact status strings it treats as active (included) and which it excludes.
 
-`ACTIVE`, `CANCELLED`, `REMOVED`, `IN_LIQUIDATION`, `UNKNOWN`
-
-**Registry mappings (for reference and adapter declaration use):**
-
-| Enum value | NZ (NZBN) | AU (ABR) | UK (Companies House) |
+| Status category | NZ (NZBN) | AU (ABR) | UK (Companies House) |
 |---|---|---|---|
-| `ACTIVE` | `Registered` | `Active` | `active`, `registered` |
-| `CANCELLED` | — | `Cancelled`, `Not Active` | `voluntary-arrangement` |
-| `REMOVED` | `Removed`, `Deregistered` | — | `dissolved`, `removed`, `converted-closed` |
-| `IN_LIQUIDATION` | — | — | `liquidation`, `receivership`, `administration` |
-| `UNKNOWN` | anything else | anything else | anything else |
+| **Active (include)** | `Registered` | `Active` | `active`, `registered` |
+| Cancelled | — | `Cancelled`, `Not Active` | `voluntary-arrangement` |
+| Removed | `Removed`, `Deregistered` | — | `dissolved`, `removed`, `converted-closed` |
+| In liquidation | — | — | `liquidation`, `receivership`, `administration` |
+| Other | anything else | anything else | anything else |
 
-UK is included for future reference — it is not MVP scope. Each adapter's YAML declaration must explicitly state its own mapping using the registry's exact status strings.
-
-Note: the normalized enum is used for the re-check/monitoring layer. The `Search` contract does not return the enum — it filters by it internally (only `ACTIVE` entities are returned). The enum surfaces in stored records and monitoring logic.
+UK is included for future reference — it is not MVP scope.
 
 ### Data sources
 
@@ -115,16 +120,6 @@ Note: the normalized enum is used for the re-check/monitoring layer. The `Search
   - Treat it as *a* configurable fallback, swappable for OpenCorporates or another provider.
 
 **Note on calling the fallback:** the verification service calling OpenRegistry is a plain MCP client reading JSON — **no LLM, no token cost.** Token cost only arises if *this* service is later exposed as an MCP server that an AI agent calls.
-
-### Re-check / monitoring design
-
-Active status must be re-verified on a recurring basis, **at least every 6 months** (a floor, not a target). Prefer push/notification over blind polling where the source supports it.
-
-- Store the **canonical registry id** at verification time (NZBN / NZ company number; ABN/ACN), not the name.
-- **NZ:** use ETags (`If-None-Match`) and/or a watchlist for near-real-time change detection; the 6-month timer is just a backstop.
-- **AU:** no push mechanism — re-query on schedule and compare the returned status + status date. Daily-updated source allows more frequent polling if wanted.
-- Normalize each registry's status into the enum; cache last status + `last_checked` per company.
-- Storage is behind `IVerificationStore` (defined in Core). Dev and test use `InMemoryVerificationStore`. The production implementation (Neon/PostgreSQL) is added when re-check/monitoring is built. Whether an adapter uses the store at all is the adapter's decision — adapters with native re-check support (e.g. NZBN ETags) may not need it.
 
 ### Front doors (output interfaces)
 
@@ -164,7 +159,7 @@ Fixtures (recorded registry responses) so adapters are testable **offline** — 
 
 ### Tech & repo
 
-- **Solution shape:** `CompanyVerification.Core/` (class library — contract, adapters, `IVerificationStore`, `InMemoryVerificationStore`) + `CompanyVerification.Api/` (HTTP front door, future `NeonVerificationStore`) + `CompanyVerification.Tests/` (xUnit). Monorepo MVP; designed for clean extraction.
+- **Solution shape:** `CompanyVerification.Core/` (class library — contract, adapters) + `CompanyVerification.Api/` (HTTP front door) + `CompanyVerification.Tests/` (xUnit). Monorepo MVP; designed for clean extraction. No store layer — service is stateless.
 - **Stack:** C# / .NET 10. Confirmed choice — matches the consuming product and the team's learning direction. .NET 10 is LTS, supported until November 2028. Because the boundary is a package/HTTP/MCP contract, the verification service *could* even be a different language than its consumers — an option, not a plan.
 - **Repo:** MVP as a sibling directory in the monorepo; designed to be cleanly extractable into its own repo later (e.g. `git subtree split`) if/when opened to the public.
 - **Licence:** AGPL 3.0. Free for non-commercial use. Commercial use (using this in a product or service that generates revenue) requires a separate commercial licence from the project owner. AGPL's copyleft clause means anyone running a modified version as a network service must publish their source — this creates natural pressure for commercial users to seek a paid licence rather than building on it silently. `LICENSE` file goes in the repo root before the first commit.
@@ -190,13 +185,12 @@ Set up the environment before any .NET code, so Claude Code is configured and co
 Zero-cost hosting. Cold start is a known, accepted tradeoff — documented here, not treated as a bug.
 
 - **App hosting:** Render free tier. Sleeps after 15 minutes of inactivity; first request after idle takes up to ~30 seconds. Acceptable because the verify step is an explicit user-triggered gate (spinner shown), not a background call.
-- **Database:** Neon free tier (serverless PostgreSQL). Compute auto-pauses and resumes transparently on connection; adds ~100–300ms to the first query after idle. 0.5 GB storage. Chosen over Supabase because Supabase pauses the entire project after 1 week of inactivity and requires manual intervention to unpause — incompatible with low-traffic early stage. `[DEFERRED — not needed until IVerificationStore has a PostgreSQL implementation]`
+- **Database:** None. Service is stateless — no persistence layer.
 - **CI/CD:** GitHub Actions (free for public repos). Deploys to Render via deploy hook on push to main.
-- **Local development:** Dev container with .NET 10 SDK only — no PostgreSQL service until the Neon/PostgreSQL store implementation is built.
+- **Local development:** Dev container with .NET 10 SDK only.
 
 **Known limitations to document:**
 - Render free tier: 750 instance-hours/month; no custom domain (`.onrender.com` URL).
-- Neon free tier: 0.5 GB storage cap.
 - Upgrade path: move to Render paid tier ($7/month, no sleep) if the project gains traction. Architecture does not need to change — tier only.
 
 ---
