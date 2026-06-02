@@ -45,6 +45,12 @@ public abstract class VerificationProviderBase : IVerificationProvider
         }
     }
 
-    private static void ValidateCountry(string country) =>
-        throw new NotImplementedException();
+    private static void ValidateCountry(string country)
+    {
+        if (string.IsNullOrEmpty(country))
+            throw new ArgumentException("Country code must not be null or empty.", nameof(country));
+
+        if (country.Length != 2 || !country.All(char.IsLetter))
+            throw new ArgumentException("Country code must be a two-letter ISO 3166-1 alpha-2 code.", nameof(country));
+    }
 }
