@@ -41,9 +41,9 @@ and decisions made along the way. Update this file as work progresses.
 
 ## Next
 
-1. **NZBN adapter** — first native adapter; add `api.business.govt.nz` to firewall script; extend `VerificationProviderBase`, implement `SearchCore()`
-2. **Conformance YAML** — adapter declaration file for NZBN (active statuses, company entity types)
-3. **Conformance test suite** — standard battery in `Tests` covering active, dissolved, non-company, not-found, and upstream outage cases
+1. **NZBN adapter** — first native adapter; add `api.business.govt.nz` to firewall script; extend `VerificationProviderBase`, implement `SearchCore()`. Scope: any registered, active NZ entity that can legitimately employ people — includes companies, government bodies, limited partnerships, societies, co-operatives, and trust structures. Excludes sole traders, unincorporated partnerships, and unclassifiable legacy codes.
+2. **Conformance YAML** — adapter declaration file for NZBN (active statuses, full employer entity type list)
+3. **Conformance test suite** — standard battery in `Tests` covering active company returned, dissolved filtered, non-employer type filtered, not-found, and upstream outage cases
 4. **API controller** — thin HTTP wrapper over `IVerificationProvider`
 
 ---
@@ -57,6 +57,7 @@ and decisions made along the way. Update this file as work progresses.
 | State / monitoring | Out of scope | Service answers "active right now" only; change detection is a separate concern |
 | Database | None | No store layer — service is stateless |
 | NZ adapter | Native NZBN | OpenRegistry NZ implementation is undocumented — black box for primary market |
+| NZBN adapter scope | All employer entity types | Purpose is legitimate employer verification, not company-only lookup — includes govt, societies, partnerships, trusts; excludes sole traders (no separate legal entity), unincorporated partnerships, and unknown legacy codes (B/I/D/F/N/S/T/Y/Z/G) |
 | Fallback | OpenRegistry (candidate) | ToS verified; swappable if needed |
 | MCP server | Not finalized | Defer until a real agent consumer exists |
 | Country code format | ISO 3166-1 alpha-2 | Industry standard for APIs; unambiguous; case-insensitive accepted, normalised to uppercase |
