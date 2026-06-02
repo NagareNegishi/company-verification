@@ -21,7 +21,7 @@ and decisions made along the way. Update this file as work progresses.
 ### Core contract
 
 - `CompanyCandidate` — sealed record with `RegistryId`, `Name`, `Country`, optional `AdditionalFields`
-- `IVerificationProvider` — interface with `Search(name, country, cancellationToken)`
+- `IVerificationProvider` — interface with `Search(name, country, cancellationToken)` and `SupportedCountries` for adapter self-declaration and generic routing
 - `VerificationProviderBase` — abstract base class; owns `Search()` (validates, normalises, delegates to `SearchCore()`); adapters implement `SearchCore()`
 - Input validation enforced in the contract layer: name (not null/whitespace, max 200 chars, no control characters, no angle brackets, Unicode allowed); country (ISO 3166-1 alpha-2, case-insensitive, normalised to uppercase)
 - Boilerplate deleted: `Class1.cs`, `WeatherForecast.cs`, `WeatherForecastController.cs`, `UnitTest1.cs`
@@ -61,4 +61,5 @@ and decisions made along the way. Update this file as work progresses.
 | MCP server | Not finalized | Defer until a real agent consumer exists |
 | Country code format | ISO 3166-1 alpha-2 | Industry standard for APIs; unambiguous; case-insensitive accepted, normalised to uppercase |
 | Contract enforcement | Interface + abstract base class | Interface for DI/testability; base class for guaranteed validation via Template Method pattern (`SearchCore`) |
+| Adapter country declaration | `SupportedCountries` on interface | Enables generic routing layer; compiler enforces it on every adapter |
 | Name search flexibility | Partial names accepted | Registries handle case-insensitive substring matching; typo tolerance is not provided |
