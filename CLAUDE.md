@@ -15,8 +15,7 @@ Pluggable adapter per country registry — new country = new adapter, never touc
 - Every new adapter must add its registry hostname to
   `.devcontainer/project-firewall.sh` before any code can reach it.
 
-- No database in dev until `IVerificationStore` has a PostgreSQL
-  implementation — `InMemoryVerificationStore` only for now.
+- No database — service is stateless.
 
 - Adapter filtering: return only `ACTIVE` entities, company types only.
   What counts as active/company is the adapter's decision, declared in
