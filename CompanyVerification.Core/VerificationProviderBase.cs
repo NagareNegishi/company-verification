@@ -27,4 +27,10 @@ public abstract class VerificationProviderBase : IVerificationProvider
         string name,
         string country,
         CancellationToken cancellationToken);
+
+    private static void ValidateName(string name) =>
+        throw new NotImplementedException();
+
+    private static void ValidateCountry(string country) =>
+        throw new NotImplementedException();
 }
