@@ -1,6 +1,6 @@
 # NZBN API — Verified Findings
 
-All information below is confirmed from open-source library source code.
+All information below is confirmed from official legislation or open-source library source code.
 Nothing here is inferred or guessed.
 
 ---
@@ -55,6 +55,25 @@ Source: [t-pearse/nzbn — lib/nzbn.rb](https://github.com/t-pearse/nzbn/blob/ma
 ```
 
 Source: [Procuret/nzbn-python — nzbn/abbreviated_entity.py](https://github.com/Procuret/nzbn-python/blob/master/nzbn/abbreviated_entity.py)
+
+### Field presence guarantees
+
+| Field | Always present | Basis |
+|-------|---------------|-------|
+| `nzbn` | Yes | Schedule 3 mandatory (NZBN Act 2016) |
+| `entityName` | Yes — key always present; value may be `null` for historical records | Schedule 3 mandatory ("Legal entity name"); stored as `Optional` in Procuret library |
+| `entityStatusCode` | Yes | Schedule 3 mandatory ("Status"); NZBN Act 2016 |
+| `entityTypeCode` | Yes | Schedule 3 mandatory ("Kind of entity"); NZBN Act 2016 |
+| `tradingNames` | Yes — but may be empty array | Schedule 3 mandatory ("Trading name or names") |
+| `classifications` | No — key may be absent | Schedule 4 optional; Procuret library guards with `if 'classifications' in data` |
+| `registrationDate` | Yes — key present; value may be `null` | Schedule 3 mandatory ("Start date"); stored as `Optional` in Procuret library |
+
+**Legislation source:** [NZ Business Number Act 2016 — Schedule 3: Public primary business data](https://www.legislation.govt.nz/act/public/2016/0016/20.0/DLM6431606.html)
+
+Schedule 3 lists the data the register **must** contain for every NZBN entity:
+> "Legal entity name, Trading name or names, Registered address, Location identifier, NZBN, Start date, Kind of entity, and Status"
+
+Schedule 4 data (trading areas, industry classification, website, phone, email) is optional — entities choose whether to provide it.
 
 ---
 
