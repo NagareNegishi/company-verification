@@ -28,8 +28,22 @@ public abstract class VerificationProviderBase : IVerificationProvider
         string country,
         CancellationToken cancellationToken);
 
-    private static void ValidateName(string name) =>
-        throw new NotImplementedException();
+    private static void ValidateName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException("Name must not be null or whitespace.", nameof(name));
+
+        if (name.Length > 200)
+            throw new ArgumentException("Name must not exceed 200 characters.", nameof(name));
+
+        foreach (var c in name)
+        {
+            if (c < 32)
+                throw new ArgumentException("Name must not contain control characters.", nameof(name));
+            if (c == '<' || c == '>')
+                throw new ArgumentException("Name must not contain angle brackets.", nameof(name));
+        }
+    }
 
     private static void ValidateCountry(string country) =>
         throw new NotImplementedException();
