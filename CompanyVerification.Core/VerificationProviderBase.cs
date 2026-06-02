@@ -1,5 +1,9 @@
 namespace CompanyVerification.Core;
 
+/// <summary>
+/// Base class for all country registry adapters. Enforces input validation and
+/// delegates registry-specific search to <see cref="SearchCore"/>.
+/// </summary>
 public abstract class VerificationProviderBase : IVerificationProvider
 {
     /// <inheritdoc/>
