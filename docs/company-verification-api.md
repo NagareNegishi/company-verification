@@ -56,7 +56,7 @@ Registry "active" status means the entity is **legally alive** (and for Australi
 - Name must contain no control characters (`\0`, `\r`, `\n`, `\t`, or any character below ASCII 32) — `ArgumentException` thrown. These have no place in a company name and can cause HTTP header injection in outbound requests.
 - HTML angle brackets (`<` and `>`) are rejected as defense in depth — no real company name requires them.
 - Unicode is permitted — NZ/AU company names include Māori characters (ā, ō) and other scripts.
-- Country code must not be null or empty — `ArgumentException` thrown.
+- Country code must be a two-letter ISO 3166-1 alpha-2 code (e.g. `"NZ"`, `"AU"`), accepted case-insensitively and normalized to uppercase internally — `ArgumentException` thrown if null, empty, or not exactly two letters.
 
 Validation lives in the contract so it applies regardless of transport (HTTP, library, direct test). The HTTP controller adds its own layer that returns `400 Bad Request` before the contract is reached.
 
