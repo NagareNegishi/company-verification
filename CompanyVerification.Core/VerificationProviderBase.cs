@@ -7,6 +7,9 @@ namespace CompanyVerification.Core;
 public abstract class VerificationProviderBase : IVerificationProvider
 {
     /// <inheritdoc/>
+    public abstract IReadOnlyList<string> SupportedCountries { get; }
+
+    /// <inheritdoc/>
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="name"/> or <paramref name="country"/> fail input validation.
     /// </exception>
