@@ -5,7 +5,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: Core contract complete — NZBN adapter not yet started
+## Status: NZBN adapter in progress — waiting for API key approval
 
 ---
 
@@ -37,14 +37,24 @@ and decisions made along the way. Update this file as work progresses.
 - `Api` and `Tests` reference `Core`
 - `dotnet build` passes — all three projects compile clean
 
+### NZBN adapter — in progress
+
+- `api.business.govt.nz` added to `.devcontainer/project-firewall.sh` firewall allowlist
+- NZBN API registration submitted at `portal.api.business.govt.nz` — sandbox key pending approval (up to one working day)
+- Decision doc updated: `docs/decisions/nzbn-api.md` now includes verified registration steps and sandbox/production base URLs
+
 ---
 
 ## Next
 
-1. **NZBN adapter** — first native adapter; add `api.business.govt.nz` to firewall script; extend `VerificationProviderBase`, implement `SearchCore()`. Scope: any registered, active NZ entity that can legitimately employ people — includes companies, government bodies, limited partnerships, societies, co-operatives, and trust structures. Excludes sole traders, unincorporated partnerships, and unclassifiable legacy codes.
-2. **Conformance YAML** — adapter declaration file for NZBN (active statuses, full employer entity type list)
-3. **Conformance test suite** — standard battery in `Tests` covering active company returned, dissolved filtered, non-employer type filtered, not-found, and upstream outage cases
-4. **API controller** — thin HTTP wrapper over `IVerificationProvider`
+1. **Smoke test** — once sandbox key arrives, run a live `curl` against the sandbox to confirm real response shape and entity type codes
+2. **`NzbnResponse.cs`** — model response types from observed data; folder: `CompanyVerification.Core/Providers/Nz/`
+3. **`NzbnProvider.cs`** — extend `VerificationProviderBase`; filter by status `"50"` and confirmed entity type codes; map to `CompanyCandidate`
+4. **Test suite** — xUnit tests covering active returned, dissolved filtered, wrong type filtered, not-found, upstream outage
+5. **`NzbnClient.cs`** — typed HTTP client; calls `api.business.govt.nz`
+6. **Register in `Program.cs`** — DI wiring for `IHttpClientFactory`, typed client, `IVerificationProvider`
+7. **Conformance YAML** — adapter declaration file (active statuses, full employer entity type list)
+8. **API controller** — thin HTTP wrapper over `IVerificationProvider`
 
 ---
 
@@ -64,3 +74,6 @@ and decisions made along the way. Update this file as work progresses.
 | Contract enforcement | Interface + abstract base class | Interface for DI/testability; base class for guaranteed validation via Template Method pattern (`SearchCore`) |
 | Adapter country declaration | `SupportedCountries` on interface | Enables generic routing layer; compiler enforces it on every adapter |
 | Name search flexibility | Partial names accepted | Registries handle case-insensitive substring matching; typo tolerance is not provided |
+| NZBN API access | Subscription key only | Read-only public data; OAuth2 not needed |
+| NZBN development environment | Sandbox first | Sandbox key available immediately after approval; switch to production key once tested |
+| NZBN adapter folder | `Core/Providers/Nz/` | Groups all country adapters under `Providers/`; isolates NZ-specific types and HTTP logic |
