@@ -5,6 +5,30 @@ Nothing here is inferred or guessed.
 
 ---
 
+## Registration
+
+Register at: `portal.api.business.govt.nz`
+
+Steps:
+1. Create an account on the portal
+2. Subscribe to the **NZBN API** product — choose the subscription key option (sufficient for public read access; OAuth2 is only needed for write operations)
+3. Sign the API Access Agreement when prompted
+4. Wait for approval — the support team confirms within one working day
+5. Retrieve your **sandbox key** (for development) and **production key** (for live calls) from your account
+
+### Environments
+
+| Environment | Base URL |
+|-------------|----------|
+| Sandbox | `https://api.business.govt.nz/sandbox/nzbn/v5/` |
+| Production | `https://api.business.govt.nz/gateway/nzbn/v5/` |
+
+Sandbox contains a mix of test cases and historical Companies Register data (pre-2010). Use the sandbox key during development; switch to the production key when ready.
+
+Source: [portal.api.business.govt.nz/getting-started](https://portal.api.business.govt.nz/getting-started), [nzbn.govt.nz/using-the-nzbn/nzbn-services/api](https://www.nzbn.govt.nz/using-the-nzbn/nzbn-services/api/)
+
+---
+
 ## Endpoint
 
 ```
