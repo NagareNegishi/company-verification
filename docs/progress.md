@@ -67,9 +67,9 @@ and decisions made along the way. Update this file as work progresses.
 
 3. **Smoke test** — once sandbox key arrives, run a live `curl` against the sandbox to confirm real response shape and entity type codes
 4. **Fill `conformance.yaml`** — active statuses, full employer entity type list; matches `NzbnFilter.cs`
-5. **`NzbnResponse.cs`** — model response types from observed data; folder: `CompanyVerification.Core/Providers/Nz/`
+5. **`NzbnResponse.cs`** — model response types from observed data; must capture `sourceRegister` field from API response (needed for A2 attribution per clause 4.8); folder: `CompanyVerification.Core/Providers/Nz/`
 6. **`NzbnClient.cs`** — typed HTTP client; calls `api.business.govt.nz`
-7. **`NzbnProvider.cs`** — extend `VerificationProviderBase`; use `NzbnFilter` for status and entity type; map to `CompanyCandidate`
+7. **`NzbnProvider.cs`** — extend `VerificationProviderBase`; use `NzbnFilter` for status and entity type; map to `CompanyCandidate`; record `DateTimeOffset.UtcNow` as `searched_at` before the HTTP call; put `source_register` (from response) and `searched_at` (ISO 8601) into `AdditionalFields`
 8. **Test suite** — xUnit tests covering active returned, dissolved filtered, wrong type filtered, not-found, upstream outage
 9. **Register in `Program.cs`** — DI wiring for `IHttpClientFactory`, typed client, `IVerificationProvider`
 10. **API controller** — thin HTTP wrapper over `IVerificationProvider`
