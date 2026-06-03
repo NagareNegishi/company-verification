@@ -5,7 +5,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: NZBN adapter in progress — waiting for API key approval
+## Status: NZBN adapter — compliance prep in progress; remaining items before coding starts
 
 ---
 
@@ -43,18 +43,36 @@ and decisions made along the way. Update this file as work progresses.
 - NZBN API registration submitted at `portal.api.business.govt.nz` — sandbox key pending approval (up to one working day)
 - Decision doc updated: `docs/decisions/nzbn-api.md` now includes verified registration steps and sandbox/production base URLs
 
+### NZBN adapter — compliance prep
+
+- `CompanyVerification.Core/Providers/Nz/` folder created
+- `NzbnFilter.cs` — entity status and entity type allowlists; source links to Procuret/nzbn-python
+- `NzbnTermsTemplate.cs` — MBIE ToS clause verified line-by-line against the actual API Access Agreement PDF (November 2022); Schedule 1 excluded website categories used verbatim
+- `Providers/Nz/.env.example` — placeholder for `NZBN_SUBSCRIPTION_KEY`; marked not finalised
+- `conformance.yaml` — empty placeholder; to be filled before adapter is complete
+- `.gitignore` updated: `docs/decisions/MBIE/*.pdf` added
+- MBIE API Access Agreement PDF (`docs/decisions/MBIE/`) read and verified; gitignored
+
+
 ---
 
 ## Next
 
-1. **Smoke test** — once sandbox key arrives, run a live `curl` against the sandbox to confirm real response shape and entity type codes
-2. **`NzbnResponse.cs`** — model response types from observed data; folder: `CompanyVerification.Core/Providers/Nz/`
-3. **`NzbnProvider.cs`** — extend `VerificationProviderBase`; filter by status `"50"` and confirmed entity type codes; map to `CompanyCandidate`
-4. **Test suite** — xUnit tests covering active returned, dissolved filtered, wrong type filtered, not-found, upstream outage
-5. **`NzbnClient.cs`** — typed HTTP client; calls `api.business.govt.nz`
-6. **Register in `Program.cs`** — DI wiring for `IHttpClientFactory`, typed client, `IVerificationProvider`
-7. **Conformance YAML** — adapter declaration file (active statuses, full employer entity type list)
-8. **API controller** — thin HTTP wrapper over `IVerificationProvider`
+### Remaining compliance before coding starts
+
+1. **A3 README notice** — add the library user credentials warning (clause 7.7): users must supply their own NZBN key; register at `portal.api.business.govt.nz`; sign the MBIE API Access Agreement
+2. **Verify PDF not tracked** — `docs/decisions/MBIE/*.pdf` is gitignored but if the file was staged before the rule was added, run `git rm --cached` to untrack it
+
+### Coding — NZBN adapter
+
+3. **Smoke test** — once sandbox key arrives, run a live `curl` against the sandbox to confirm real response shape and entity type codes
+4. **Fill `conformance.yaml`** — active statuses, full employer entity type list; matches `NzbnFilter.cs`
+5. **`NzbnResponse.cs`** — model response types from observed data; folder: `CompanyVerification.Core/Providers/Nz/`
+6. **`NzbnClient.cs`** — typed HTTP client; calls `api.business.govt.nz`
+7. **`NzbnProvider.cs`** — extend `VerificationProviderBase`; use `NzbnFilter` for status and entity type; map to `CompanyCandidate`
+8. **Test suite** — xUnit tests covering active returned, dissolved filtered, wrong type filtered, not-found, upstream outage
+9. **Register in `Program.cs`** — DI wiring for `IHttpClientFactory`, typed client, `IVerificationProvider`
+10. **API controller** — thin HTTP wrapper over `IVerificationProvider`
 
 ---
 
