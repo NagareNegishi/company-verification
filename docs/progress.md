@@ -91,6 +91,8 @@ and decisions made along the way. Update this file as work progresses.
 | Country code format | ISO 3166-1 alpha-2 | Industry standard for APIs; unambiguous; case-insensitive accepted, normalised to uppercase |
 | Contract enforcement | Interface + abstract base class | Interface for DI/testability; base class for guaranteed validation via Template Method pattern (`SearchCore`) |
 | Adapter country declaration | `SupportedCountries` on interface | Enables generic routing layer; compiler enforces it on every adapter |
+| Adapter priority | API layer's concern, not the adapter's | Adapters declare which countries they handle; which adapter wins for a given country is decided at the composition root, not inside the adapter |
+| Fallback availability | Optional — service deploys without it | Missing credentials: startup warning, fallback countries return "unsupported". Invalid credentials: startup alert, same runtime behaviour. Native adapters unaffected either way |
 | Name search flexibility | Partial names accepted | Registries handle case-insensitive substring matching; typo tolerance is not provided |
 | NZBN API access | Subscription key only | Read-only public data; OAuth2 not needed |
 | NZBN development environment | Sandbox first | Sandbox key available immediately after approval; switch to production key once tested |

@@ -80,7 +80,7 @@ Validation lives in the contract so it applies regardless of transport (HTTP, li
 
 **Other design rules:**
 - Richer data (officers, financials, etc.) must never be required by the contract — it belongs in the key-value additional fields only.
-- The fallback is optional and swappable — configured per deployment, never hard-coded.
+- The fallback is optional and swappable — configured per deployment, never hard-coded. If credentials are missing, the service starts normally and countries that would use the fallback return "unsupported" instead. If credentials are present but invalid, a startup alert is raised and the same degraded behaviour applies. Native adapters are unaffected in both cases.
 - A conformance test suite and declaration file gate every adapter.
 
 ### Registry status reference
