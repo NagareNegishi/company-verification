@@ -34,6 +34,11 @@ This gives day-one breadth (via fallback), high quality where it matters (native
 - **New Zealand** → native NZBN adapter. **Must build** — NZ is the primary market. OpenRegistry lists NZ Companies Office as a covered jurisdiction, but their NZ implementation is undocumented (no upstream source published, unlike every other jurisdiction they cover), making it a black box for the primary market. The native NZBN adapter gives known scope, ETag recheck support, and watchlist monitoring that OpenRegistry's NZ coverage cannot be verified to provide.
 - **Australia** → covered for free by the fallback (its registry, ABR, is in the fallback's coverage). A native ABN adapter is optional, added later only for freshness/monitoring control.
 - **Everything else** → fallback where covered, otherwise "unsupported."
+- **Long-term target** → full Oceania and Pacific coverage. NZ and AU are the first two native adapters; other Pacific registries follow as the project matures.
+
+### How this differs from existing services
+
+OpenCorporates and similar tools aggregate company data across hundreds of jurisdictions. This project does one thing: answer whether a company is currently active, using live queries to official registries. The code is open-source and self-hostable, which no equivalent service offers. The target is full Oceania and Pacific coverage, with NZ and AU as the first two adapters and package publication to follow once both are working.
 
 ### Important limitation (must be respected, not a decision)
 
@@ -166,7 +171,7 @@ Fixtures (recorded registry responses) so adapters are testable **offline** — 
 - **CLA (Contributor License Agreement):** Required from all external contributors before their code is merged. Grants the project owner the right to relicense contributions, preserving the option to move to a commercial or dual licence later. Set up `CLA.md` and CLA Assistant (GitHub App) before the first external pull request — not before coding starts.
 - **Adapter firewall rule:** every new adapter must add its registry hostname to `.devcontainer/project-firewall.sh` before dev container code can reach it. The script is the auditable list of all external registries this service calls.
 - **HTTPS in dev:** HTTP only. Registry data is public; no user credentials or personal data in transit. Render handles TLS termination in prod — the app serves plain HTTP behind their reverse proxy.
-- **NuGet publishing threshold:** publish `0.1.0` when the NZ native adapter returns real NZBN results (not mocked). Declare `1.0.0` after the Rating API consumes it in production and the `Search()` signature has not changed for 4–6 weeks of real use.
+- **NuGet publishing threshold:** publish the first public package when both the NZ and AU adapters return real results (not mocked). Declare `1.0.0` after the Rating API consumes it in production and the `Search()` signature has not changed for 4–6 weeks of real use.
 
 ### Bootstrap order
 
