@@ -10,7 +10,7 @@ Source: https://abr.business.gov.au (checked 2026-06-05)
 
 - Registration is self-serve. GUID issued immediately. No human approval. (~2 minutes)
 - Accepting the Web Services Agreement is required before the GUID is issued.
-- Agreement URL: https://abr.business.gov.au/Tools/WebServicesAgreement — **not yet read**
+- Agreement URL: https://abr.business.gov.au/Tools/WebServicesAgreement — **read 2026-06-06**
 - Name search is available on the free tier: `ABRSearchByName`, `ABRSearchByNameSimpleProtocol`
 - API speaks SOAP or HTTP GET/POST with XML. JSON endpoint exists but covers limited methods only.
 - Status values returned by the API: `Active`, `Cancelled`, `Not Active`
@@ -24,7 +24,12 @@ Source: https://abr.business.gov.au (checked 2026-06-05)
 
 ### A1. Signup terms clause
 
-TODO — read the Web Services Agreement and extract any clause requiring terms to be passed to end users.
+The agreement contains no clause requiring terms to be passed to end users or
+library consumers. Third-party data sharing is explicitly permitted with no
+downstream terms obligation attached.
+
+Source: "You may, at your own risk, provide relevant extracts of the ABN Lookup
+Web Services to third parties." (Use of ABN Lookup Web Services)
 
 ### A2. Attribution line
 
