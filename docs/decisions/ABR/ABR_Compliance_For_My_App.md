@@ -33,7 +33,15 @@ Web Services to third parties." (Use of ABN Lookup Web Services)
 
 ### A2. Attribution line
 
-TODO — read the Web Services Agreement. Confirm whether attribution text is required when showing data, and what format is required.
+The agreement imposes no attribution requirement. There is no clause requiring
+a source line, timestamp, or logo when displaying data.
+
+The one related obligation is negative: you must not imply that the Commonwealth
+endorses, approves, or is affiliated with your product or use of the data.
+
+Source: "You must not represent or imply, or allow any associated person to
+represent or imply, that the Commonwealth endorses, approves, or is affiliated
+in any way with you..." (Use of ABN Lookup Web Services)
 
 ### A3. Repo notice for library users
 
