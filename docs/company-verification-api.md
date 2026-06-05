@@ -26,18 +26,16 @@ When asked to verify a company in some country, the service resolves a provider 
 2. **Community adapter** (contributed by others, must pass the conformance suite).
 3. **Unsupported** — return a clear "no adapter for this country" result.
 
-No fallback provider is in use. OpenRegistry was the initial candidate but was ruled out in June 2026 (MCP server, no REST API). No suitable alternative was identified.
-
 ### MVP scope
 
 - **New Zealand** → native NZBN adapter. Must build — NZ is the primary market.
 - **Australia** → native ABR adapter. Planned after the NZBN adapter ships.
 - **Everything else** → "unsupported" until a native adapter is written.
-- **Long-term target** → full Oceania and Pacific coverage. NZ and AU are the first two native adapters; other Pacific registries follow as the project matures.
+- **Long-term** → additional countries where an official public registry API exists. Coverage expands as APIs are researched and adapters are built.
 
 ### How this differs from existing services
 
-Tools like OpenCorporates aggregate company data across hundreds of jurisdictions. This project does one thing: answer whether a company is currently active, using live queries to official registries. The code is open-source and self-hostable. The target is full Oceania and Pacific coverage, with NZ and AU as the first two adapters and package publication to follow once both are working.
+Tools like OpenCorporates aggregate company data across hundreds of jurisdictions. This project does one thing: answer whether a company is currently active, using live queries to official registries. The code is open-source and self-hostable. NZ and AU are the initial targets. Coverage expands to other countries as official registry APIs are identified.
 
 ### Important limitation (must be respected, not a decision)
 
