@@ -31,15 +31,15 @@ Source: openregistry.sophymarine.com + RFC 7591 — checked 2026-06-05
 
 ### A1. Signup terms clause
 
-TODO — confirm whether OpenRegistry requires the library author to pass any terms to end users. No such clause was found in the ToS review, but a formal developer agreement may exist. See B1 below.
+Not required. No clause in the ToS obligates the library author to pass terms to end users. No separate developer agreement exists (confirmed 2026-06-05).
 
 ### A2. Attribution line
 
-TODO — confirm whether OpenRegistry requires attribution text when showing data.
+Not required by OpenRegistry. The ToS contains no attribution clause for displayed data. Attribution for AU data shown to users is governed by the ABR Web Services Agreement, not by OpenRegistry.
 
 ### A3. Repo notice for library users
 
-Per-deployment credentials are required by design (confirmed restriction 3 above). Confirm whether this means a README notice is mandatory before writing it.
+No mandatory notice text was found in the ToS. The per-deployment credential requirement is a technical constraint (each deployer self-registers via DCR), not a documented obligation to publish a warning. Include a practical note in the README as good practice.
 
 ---
 
@@ -47,7 +47,7 @@ Per-deployment credentials are required by design (confirmed restriction 3 above
 
 ### B1. Formal developer or distribution agreement
 
-No formal developer agreement or library-distribution terms were found in public documentation during the ToS review. Confirm this is correct before the fallback adapter ships — check the site directly or contact Sophymarine.
+Confirmed: no formal developer agreement exists (checked 2026-06-05 via site search and public docs). The ToS is the only governing document. No action required.
 
 ### B2. Rate limits at the free tier
 
@@ -55,11 +55,11 @@ The 3-jurisdiction cap per rolling 60-second window applies on the free tier. Th
 
 ### B3. Library vs embedded obligations
 
-TODO — confirm once B1 is resolved.
+The ToS applies equally to both uses. No clause distinguishes between a library author and an end deployer. The three confirmed restrictions (no resale, no competing proxy, per-deployment credentials) apply to anyone running the adapter.
 
 ### B4. Termination and data deletion
 
-TODO — confirm whether data must be deleted when access is terminated.
+Not applicable. OpenRegistry is a real-time proxy that holds no stored copy of registry data. Stopping use of the service leaves nothing to delete.
 
 ### B5. Jurisdiction mismatch
 
@@ -71,7 +71,7 @@ The agreement is governed by the laws of England and Wales. This is a minor mism
 
 - [x] ToS verified — wrapping as configurable fallback permitted (2026-05-16)
 - [x] Confirmed restrictions documented above
-- [ ] Confirm no separate developer or distribution agreement applies (B1)
-- [ ] Confirm attribution requirements (A2), or confirm none exist
-- [ ] Decide whether a README notice is required for per-deployment credentials (A3)
-- [ ] Confirm termination and data-deletion obligations (B4)
+- [x] No separate developer or distribution agreement applies — ToS governs (2026-06-05)
+- [x] No attribution requirements from OpenRegistry — ABR attribution tracked separately in ABR_Compliance_For_My_App.md (2026-06-05)
+- [x] No mandatory README notice text — per-deployment credential note is good practice only (2026-06-05)
+- [x] Termination/data deletion not applicable — stateless proxy, no stored data (2026-06-05)
