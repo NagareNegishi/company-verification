@@ -84,9 +84,9 @@ and decisions made along the way. Update this file as work progresses.
 | API style | Controllers | Explicit routing, easier to navigate while learning |
 | State / monitoring | Out of scope | Service answers "active right now" only; change detection is a separate concern |
 | Database | None | No store layer — service is stateless |
-| NZ adapter | Native NZBN | OpenRegistry NZ implementation is undocumented — black box for primary market |
+| NZ adapter | Native NZBN | Direct, known scope; verified active status and entity types |
 | NZBN adapter scope | All employer entity types | Purpose is legitimate employer verification, not company-only lookup — includes govt, societies, partnerships, trusts; excludes sole traders (no separate legal entity), unincorporated partnerships, and unknown legacy codes (B/I/D/F/N/S/T/Y/Z/G) |
-| Fallback | OpenRegistry (candidate) | ToS verified; swappable if needed |
+| Fallback | None | OpenRegistry (initial candidate) ruled out June 2026 — MCP server, no REST API. No suitable alternative identified. Unsupported countries return "unsupported". |
 | MCP server | Not finalized | Defer until a real agent consumer exists |
 | Country code format | ISO 3166-1 alpha-2 | Industry standard for APIs; unambiguous; case-insensitive accepted, normalised to uppercase |
 | Contract enforcement | Interface + abstract base class | Interface for DI/testability; base class for guaranteed validation via Template Method pattern (`SearchCore`) |
