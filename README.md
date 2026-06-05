@@ -28,7 +28,7 @@ Never commit your key to source control.
 
 ## Status
 
-Early development. New Zealand (NZBN) is the primary target. Australia and other countries are covered through a configurable fallback provider.
+Early development. New Zealand (NZBN) is the primary target. Australia (ABR) is planned as a native adapter. Countries without a native adapter return "unsupported".
 
 ## Stack
 
