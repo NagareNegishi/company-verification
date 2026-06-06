@@ -37,3 +37,15 @@ passes. Validation checks the raw input; normalisation produces the clean input 
 A country code of `"  "` (spaces) should fail the length check (`!= 2`), not be
 silently swallowed as empty. `IsNullOrWhiteSpace` would mask that. For name,
 whitespace-only is meaningless as a search term, so `IsNullOrWhiteSpace` is correct.
+
+## `SupportedCountries` on the interface, not just the base class
+
+The routing layer works against `IVerificationProvider` and must be able to ask any
+adapter "which countries do you handle?" without knowing its concrete type.
+
+`IReadOnlyList<string>` rather than `string` so an adapter covering multiple
+jurisdictions does not need a separate class per country. Single-country adapters
+return a one-element list — no cost.
+
+Declared `abstract` on `VerificationProviderBase` so the compiler rejects any adapter
+that omits it. A missing country declaration is a routing bug; it should not compile.

@@ -6,6 +6,12 @@ namespace CompanyVerification.Core;
 public interface IVerificationProvider
 {
     /// <summary>
+    /// The ISO 3166-1 alpha-2 country codes this provider handles (e.g. <c>["NZ"]</c>).
+    /// Always upper-cased. Used by the routing layer to dispatch to the correct adapter.
+    /// </summary>
+    IReadOnlyList<string> SupportedCountries { get; }
+
+    /// <summary>
     /// Searches a country registry for active companies matching the given name.
     /// Returns only active entities of a company type; filtering is the adapter's
     /// responsibility before returning.

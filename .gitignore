@@ -34,6 +34,9 @@ notes/
 # Local configuration files from Backend
 appsettings.Development.json
 
+# Legal documents — not for public repo
+docs/decisions/MBIE/*.pdf
+
 # Claude code
 creds.json
 .claude/skills/owasp-scan/findings.json

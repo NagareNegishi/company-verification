@@ -24,16 +24,18 @@ When asked to verify a company in some country, the service resolves a provider 
 
 1. **Native adapter** (first-party, highest quality) — e.g. New Zealand via NZBN.
 2. **Community adapter** (contributed by others, must pass the conformance suite).
-3. **Fallback provider** — wrap an existing multi-country source so unsupported countries still get *some* answer.
-4. **Unsupported** — return a clear "no adapter for this country" result.
-
-This gives day-one breadth (via fallback), high quality where it matters (native adapters), and an open path for others to contribute.
+3. **Unsupported** — return a clear "no adapter for this country" result.
 
 ### MVP scope
 
-- **New Zealand** → native NZBN adapter. **Must build** — NZ is the primary market. OpenRegistry lists NZ Companies Office as a covered jurisdiction, but their NZ implementation is undocumented (no upstream source published, unlike every other jurisdiction they cover), making it a black box for the primary market. The native NZBN adapter gives known scope, ETag recheck support, and watchlist monitoring that OpenRegistry's NZ coverage cannot be verified to provide.
-- **Australia** → covered for free by the fallback (its registry, ABR, is in the fallback's coverage). A native ABN adapter is optional, added later only for freshness/monitoring control.
-- **Everything else** → fallback where covered, otherwise "unsupported."
+- **New Zealand** → native NZBN adapter. Must build — NZ is the primary market.
+- **Australia** → native ABR adapter. Planned after the NZBN adapter ships.
+- **Everything else** → "unsupported" until a native adapter is written.
+- **Long-term** → additional countries where an official public registry API exists. Coverage expands as APIs are researched and adapters are built.
+
+### How this differs from existing services
+
+Tools like OpenCorporates aggregate company data across hundreds of jurisdictions. This project does one thing: answer whether a company is currently active, using live queries to official registries. The code is open-source and self-hostable. NZ and AU are the initial targets. Coverage expands to other countries as official registry APIs are identified.
 
 ### Important limitation (must be respected, not a decision)
 
@@ -75,7 +77,7 @@ Validation lives in the contract so it applies regardless of transport (HTTP, li
 
 **Other design rules:**
 - Richer data (officers, financials, etc.) must never be required by the contract — it belongs in the key-value additional fields only.
-- The fallback is optional and swappable — configured per deployment, never hard-coded.
+- Countries without a native adapter return "unsupported". No fallback provider is currently in use.
 - A conformance test suite and declaration file gate every adapter.
 
 ### Registry status reference
@@ -106,20 +108,9 @@ UK is included for future reference — it is not MVP scope.
 - Status: `Active` / `Cancelled` / `Not Active`, updated daily, plus a status-date field to compare on recheck. Returns the ASIC number (ACN).
 - Limitations: no director/officer data (would need ASIC for that); trading names not updated since 2012 — match on legal name.
 
-**Fallback — OpenRegistry (candidate, with caveats)**
-- Base URL: `https://openregistry.sophymarine.com` — all endpoints (MCP, auth, jurisdictions) use this single host. Verified May 2026.
-- An MCP-native hosted service proxying ~27 national registries live (verbatim government data, no cache). Covers **Australia (ABR)**. Lists **New Zealand (NZ Companies Office)** as a covered jurisdiction, but their NZ implementation is undocumented — the upstream source they call is not published, unlike every other jurisdiction they cover. Treat NZ via OpenRegistry as an unverified backstop only, not a substitute for the native NZBN adapter.
-- Pricing: free tiers (anonymous 20 req/min per IP; signed-in 30/min), then Pro $9/mo, Max $29/mo, Enterprise by contact. Auth via OAuth 2.1 (no API keys).
-- **ToS verified (2026-05-16).** Wrapping OpenRegistry as a configurable fallback is permitted. Specific restrictions that apply:
-  - Do not redistribute its responses as a commercial dataset-for-sale.
-  - Do not use it to build a competing general-purpose registry proxy.
-  - Per-deployment credentials are required by design — shared credentials cannot be bundled.
-  - Governed by the laws of England and Wales (jurisdiction mismatch for a NZ-primary project — minor but noted).
-- **Remaining caveats:**
-  - It is **closed-source** (the public repo is documentation only) — so it can only be *consumed*, not extended.
-  - Treat it as *a* configurable fallback, swappable for OpenCorporates or another provider.
+**Fallback — none**
 
-**Note on calling the fallback:** the verification service calling OpenRegistry is a plain MCP client reading JSON — **no LLM, no token cost.** Token cost only arises if *this* service is later exposed as an MCP server that an AI agent calls.
+OpenRegistry was the initial candidate. Ruled out June 2026: it is an MCP server with no REST API a C# adapter can call directly. No suitable replacement was identified. See `docs/decisions/OpenRegistry/OpenRegistry_Compliance_For_My_App.md`.
 
 ### Front doors (output interfaces)
 
@@ -166,7 +157,7 @@ Fixtures (recorded registry responses) so adapters are testable **offline** — 
 - **CLA (Contributor License Agreement):** Required from all external contributors before their code is merged. Grants the project owner the right to relicense contributions, preserving the option to move to a commercial or dual licence later. Set up `CLA.md` and CLA Assistant (GitHub App) before the first external pull request — not before coding starts.
 - **Adapter firewall rule:** every new adapter must add its registry hostname to `.devcontainer/project-firewall.sh` before dev container code can reach it. The script is the auditable list of all external registries this service calls.
 - **HTTPS in dev:** HTTP only. Registry data is public; no user credentials or personal data in transit. Render handles TLS termination in prod — the app serves plain HTTP behind their reverse proxy.
-- **NuGet publishing threshold:** publish `0.1.0` when the NZ native adapter returns real NZBN results (not mocked). Declare `1.0.0` after the Rating API consumes it in production and the `Search()` signature has not changed for 4–6 weeks of real use.
+- **NuGet publishing threshold:** publish the first public package when both the NZ and AU adapters return real results (not mocked). Declare `1.0.0` after the Rating API consumes it in production and the `Search()` signature has not changed for 4–6 weeks of real use.
 
 ### Bootstrap order
 
@@ -197,8 +188,6 @@ Zero-cost hosting. Cold start is a known, accepted tradeoff — documented here,
 
 ## Open decisions (summary)
 
-- Whether to build a native AU/ABN adapter now or rely on the fallback.
-- Fallback provider not locked: OpenRegistry is the candidate — ToS verified (wrapping permitted), closed-source, lists NZ but NZ implementation is undocumented. Still swappable.
 - Whether/when to expose this service as an MCP server.
 - Config/secrets contract for per-deployment adapter credentials — direction agreed, details undrafted.
 - YAML declaration schema — structure agreed, formal schema not yet written.

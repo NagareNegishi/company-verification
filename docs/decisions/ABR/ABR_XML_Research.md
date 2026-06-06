@@ -1,0 +1,128 @@
+# ABR API Research — XML Web Services
+
+Chosen implementation path. All claims sourced from official ABR documentation,
+verified 2026-06-06. Source links go to specific pages, not the main site.
+
+See ABR_JSON_Research.md for JSON endpoint findings (not chosen).
+
+No NuGet package or SDK exists for the ABR API. Implementation uses raw HTTP GET with XML parsing.
+
+---
+
+## Name search — ABRSearchByNameAdvancedSimpleProtocol2017
+
+Use this over `ABRSearchByNameSimpleProtocol`. The 2017 variant is the only name search
+operation that accepts `activeABNsOnly=Y`, which filters cancelled ABNs server-side.
+
+Returns `SearchResultsRecord` per result:
+
+```
+ABN[]
+  identifierValue      string   11-digit ABN
+  identifierStatus     string   "Active" | "Cancelled" | "Not Active"
+
+[choice, one or more name elements]
+  legalName            IndividualSimpleName   individual entity
+  mainName             OrganisationSimpleName non-individual entity
+  mainTradingName      OrganisationSimpleName
+  otherTradingName     OrganisationSimpleName
+  businessName         OrganisationSimpleName
+  (others)
+
+mainBusinessPhysicalAddress[]
+  stateCode            string
+  postcode             string
+  isCurrentIndicator   string
+```
+
+`entityTypeCode` is not in this response.
+
+Source: https://abr.business.gov.au/Documentation/WebServiceMethods
+> "None of the name search methods return entity type data in search results."
+Source: `ABNLookup_schema.xsd` — `SearchResultsRecord` type
+
+---
+
+## ABN detail — SearchByABNv202001
+
+Second call per ABN to retrieve entity type. Use this version over older variants.
+
+Returns `ResponseBusinessEntity202001`. Relevant fields:
+
+```
+entityType                            nillable="true" in XSD; wrapper element can be nil
+  entityTypeCode   string(4)          3-letter code (e.g. "PRV"), minOccurs="0", can be absent
+  entityDescription  string           human-readable description
+
+entityStatus[]
+  entityStatusCode   string
+  effectiveFrom      date
+  effectiveTo        date
+
+ABN, ASICNumber, names, addresses, GST, charity, ACNC, superannuation, AWEF
+```
+
+Source: https://abr.business.gov.au/Documentation/DataDictionary
+Source: `ABNLookup_schema.xsd` — `ResponseBusinessEntity202001` type
+
+---
+
+## Entity type codes — 3-letter format
+
+Used in the `SearchByABNv202001` response `entityTypeCode` field.
+
+`abr.business.gov.au/Help/EntityTypeList` uses numeric IDs (`?Id=19`) for the website UI.
+Those are not the API codes. The 3-letter codes below are what the API returns.
+
+Source: https://abr.business.gov.au/Documentation/ReferenceData
+
+Selected codes relevant to company verification:
+
+| Code | Description |
+|---|---|
+| `PRV` | Australian Private Company |
+| `PUB` | Australian Public Company |
+| `IND` | Individual/Sole Trader |
+| `OIE` | Other Incorporated Entity |
+| `UIE` | Other Unincorporated Entity |
+| `COP` | Co-operative |
+| `LPT` | Limited Partnership |
+| `PTR` | Other Partnership |
+| `FPT` | Family Partnership |
+| `TRT` | Other Trust |
+| `CGE` | Commonwealth Government Entity |
+| `SGE` | State Government Entity |
+| `TGE` | Territory Government Entity |
+| `LGE` | Local Government Entity |
+
+Full list (150+ codes): https://abr.business.gov.au/Documentation/ReferenceData
+
+---
+
+## Adapter design decisions
+
+### Call strategy
+
+Two calls per search, XML throughout.
+
+1. `ABRSearchByNameAdvancedSimpleProtocol2017` with `activeABNsOnly=Y`
+   Returns `SearchResultsRecord`: ABN, status, name elements, address. No entity type.
+
+2. `SearchByABNv202001` per ABN from step 1
+   Returns `ResponseBusinessEntity202001` with `entityType > entityTypeCode`.
+   Entity type can be nil or absent (see null handling below).
+
+### Null entity type handling
+
+`entityType` in `SearchByABNv202001` is `nillable="true"` in the XSD.
+`entityTypeCode` inside it is `minOccurs="0"`. Either can be absent.
+
+Decision: configurable, default exclude.
+
+- Default (exclude): nil or absent `entityTypeCode` means the entity is not returned.
+  Rejects unclassifiable entities rather than letting unknowns through.
+- Opt-in (include): nil or absent `entityTypeCode` means the entity is returned without
+  type filtering. For callers who need maximum recall and accept the risk.
+
+ASIC has no public API. Only third-party paid wrappers exist. The ABR second call is the
+only free official source of entity type for Australian businesses.
