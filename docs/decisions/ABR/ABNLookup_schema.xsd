@@ -1,0 +1,735 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Activity" nillable="true" type="Activity" />
+  <xs:complexType name="Activity">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="Method" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Searches" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ActivityResponse" nillable="true" type="ActivityResponse" />
+  <xs:complexType name="ActivityResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="ActivityRequest" type="ActivityRequest" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Activities" type="ArrayOfActivity" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Exception" type="ResponseException" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ActivityRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="Guid" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="StartDate" type="xs:dateTime" />
+      <xs:element minOccurs="1" maxOccurs="1" name="EndDate" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfActivity">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Activity" nillable="true" type="Activity" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ResponseException">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ResponseBody">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="exceptionDescription" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="exceptionCode" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ResponseBody" />
+  <xs:element name="ActivityRequest" nillable="true" type="ActivityRequest" />
+  <xs:element name="Address" nillable="true" type="Address" />
+  <xs:complexType name="Address" abstract="true">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="stateCode" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="postcode" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AddressDetails" nillable="true" type="AddressDetails" />
+  <xs:complexType name="AddressDetails">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Address">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="effectiveFrom" type="xs:date" />
+          <xs:element minOccurs="1" maxOccurs="1" name="effectiveTo" type="xs:date" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="AddressFull" nillable="true" type="AddressFull" />
+  <xs:complexType name="AddressFull">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Address">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="addressLine1" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="addressLine2" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="suburb" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="countryName" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="AddressSimple" nillable="true" type="AddressSimple" />
+  <xs:complexType name="AddressSimple">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Address">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="isCurrentIndicator" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CharitableFund" nillable="true" type="CharitableFund" />
+  <xs:complexType name="CharitableFund">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="pbiName" type="OrganisationSimpleName" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveFrom" type="xs:date" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveTo" type="xs:date" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="OrganisationSimpleName">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Organisation">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="score" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="isCurrentIndicator" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Organisation">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="organisationName" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CharityConcession" nillable="true" type="CharityConcession" />
+  <xs:complexType name="CharityConcession">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="endorsementType" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveFrom" type="xs:date" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveTo" type="xs:date" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="AwefEntity" nillable="true" type="AwefEntity" />
+  <xs:complexType name="AwefEntity">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="endorsedFrom" type="xs:date" />
+      <xs:element minOccurs="1" maxOccurs="1" name="endorsedTo" type="xs:date" />
+      <xs:element minOccurs="0" maxOccurs="1" name="isCurrentIndicator" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CharityType" nillable="true" type="CharityType" />
+  <xs:complexType name="CharityType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="charityTypeDescription" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveFrom" type="xs:date" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveTo" type="xs:date" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ExternalRequestFilterNameType2023" nillable="true" type="ExternalRequestFilterNameType2023" />
+  <xs:complexType name="ExternalRequestFilterNameType2023">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="legalName" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="businessName" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ExternalRequestFilters2023" nillable="true" type="ExternalRequestFilters2023" />
+  <xs:complexType name="ExternalRequestFilters2023">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="nameType" nillable="true" type="ExternalRequestFilterNameType2023" />
+      <xs:element minOccurs="1" maxOccurs="1" name="postcode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="stateCode" nillable="true" type="ExternalRequestFilterStateCode" />
+      <xs:element minOccurs="1" maxOccurs="1" name="activeABNsOnly" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestFilterStateCode">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" default="N" name="QLD" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" default="N" name="NT" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" default="N" name="SA" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" default="N" name="WA" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" default="N" name="VIC" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" default="N" name="ACT" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" default="N" name="TAS" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" default="N" name="NSW" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ExternalRequestFilters2017" nillable="true" type="ExternalRequestFilters2017" />
+  <xs:complexType name="ExternalRequestFilters2017">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequestFilters2012">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="activeABNsOnly" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestFilters2012">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="nameType" nillable="true" type="ExternalRequestFilterNameType2012" />
+      <xs:element minOccurs="1" maxOccurs="1" name="postcode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="stateCode" nillable="true" type="ExternalRequestFilterStateCode" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestFilterNameType2012">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="tradingName" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="legalName" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="businessName" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ExternalRequestNameSearchAdvanced2023" nillable="true" type="ExternalRequestNameSearchAdvanced2023" />
+  <xs:complexType name="ExternalRequestNameSearchAdvanced2023">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="authenticationGUID" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="name" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="filters" nillable="true" type="ExternalRequestFilters2023" />
+          <xs:element minOccurs="0" maxOccurs="1" name="searchWidth" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="minimumScore" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="maxSearchResults" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequest">
+    <xs:sequence>
+      <xs:choice minOccurs="1" maxOccurs="1">
+        <xs:element minOccurs="0" maxOccurs="1" name="nameSearchRequest" type="ExternalRequestNameSearch" />
+        <xs:element minOccurs="0" maxOccurs="1" name="nameSearchRequestAdvanced" type="ExternalRequestNameSearchAdvanced" />
+        <xs:element minOccurs="0" maxOccurs="1" name="nameSearchRequestAdvanced2006" type="ExternalRequestNameSearchAdvanced2006" />
+        <xs:element minOccurs="0" maxOccurs="1" name="nameSearchRequestAdvanced2012" type="ExternalRequestNameSearchAdvanced2012" />
+        <xs:element minOccurs="0" maxOccurs="1" name="nameSearchRequestAdvanced2017" type="ExternalRequestNameSearchAdvanced2017" />
+        <xs:element minOccurs="0" maxOccurs="1" name="nameSearchRequestAdvanced2023" type="ExternalRequestNameSearchAdvanced2023" />
+        <xs:element minOccurs="0" maxOccurs="1" name="externalRequestABNFilter" type="ExternalRequestABNFilter" />
+        <xs:element minOccurs="0" maxOccurs="1" name="externalRequestABNEventFilter" type="ExternalRequestABNEventFilter" />
+        <xs:element minOccurs="0" maxOccurs="1" name="externalRequestABNStatusFilter" type="ExternalRequestABNStatusFilter" />
+        <xs:element minOccurs="0" maxOccurs="1" name="externalRequestABNUpdateEventFilter" type="ExternalRequestABNUpdateEventFilter" />
+        <xs:element minOccurs="0" maxOccurs="1" name="externalRequestABNCharityFilter" type="ExternalRequestABNCharityFilter" />
+        <xs:element minOccurs="0" maxOccurs="1" name="identifierSearchRequest" type="ExternalRequestIdentifierSearch" />
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestNameSearch">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="authenticationGUID" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="name" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="filters" nillable="true" type="ExternalRequestFilters" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestFilters">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="nameType" nillable="true" type="ExternalRequestFilterNameType" />
+      <xs:element minOccurs="1" maxOccurs="1" name="postcode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="stateCode" nillable="true" type="ExternalRequestFilterStateCode" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestFilterNameType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="tradingName" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="legalName" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestNameSearchAdvanced">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequestNameSearch">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="searchWidth" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="minimumScore" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestNameSearchAdvanced2006">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequestNameSearchAdvanced">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="maxSearchResults" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestNameSearchAdvanced2012">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="authenticationGUID" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="name" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="filters" nillable="true" type="ExternalRequestFilters2012" />
+          <xs:element minOccurs="0" maxOccurs="1" name="searchWidth" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="minimumScore" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="maxSearchResults" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestNameSearchAdvanced2017">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="authenticationGUID" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="name" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="filters" nillable="true" type="ExternalRequestFilters2017" />
+          <xs:element minOccurs="0" maxOccurs="1" name="searchWidth" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="minimumScore" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="maxSearchResults" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestABNFilter" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="authenticationGUID" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="postcode" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="entityTypeCode" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestABNCharityFilter">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequestABNFilter">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="state" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="charityTypeCode" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="concessionTypeCode" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestABNUpdateEventFilter">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequestABNFilter">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="state" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="updateDate" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestABNStatusFilter">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequestABNFilter">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="activeABNs" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="currentGSTRegistrationOnly" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestABNEventFilter">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequestABNFilter">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="state" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="month" type="xs:int" />
+          <xs:element minOccurs="1" maxOccurs="1" name="year" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ExternalRequestIdentifierSearch">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ExternalRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="authenticationGUID" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="identifierType" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="identifierValue" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="history" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ExternalRequestNameSearchAdvanced2017" nillable="true" type="ExternalRequestNameSearchAdvanced2017" />
+  <xs:element name="Registration" nillable="true" type="Registration" />
+  <xs:complexType name="Registration">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="status" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveFrom" type="xs:date" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveTo" type="xs:date" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DgrFundAndItemNumber" nillable="true" type="DgrFundAndItemNumber" />
+  <xs:complexType name="DgrFundAndItemNumber">
+    <xs:complexContent mixed="false">
+      <xs:extension base="DgrFund">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="itemNumber" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DgrFund">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="dgrFundName" type="OrganisationSimpleName" />
+      <xs:element minOccurs="1" maxOccurs="1" name="endorsedFrom" type="xs:date" />
+      <xs:element minOccurs="1" maxOccurs="1" name="endorsedTo" type="xs:date" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DgrEndorsementAndItemNumber" nillable="true" type="DgrEndorsementAndItemNumber" />
+  <xs:complexType name="DgrEndorsementAndItemNumber">
+    <xs:complexContent mixed="false">
+      <xs:extension base="DGREndorsement">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="entityEndorsement" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="itemNumber" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DGREndorsement">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="endorsedFrom" type="xs:date" />
+      <xs:element minOccurs="1" maxOccurs="1" name="endorsedTo" type="xs:date" />
+      <xs:element minOccurs="0" maxOccurs="1" name="isCurrentIndicator" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResponseBusinessEntity202001" nillable="true" type="ResponseBusinessEntity202001" />
+  <xs:complexType name="ResponseBusinessEntity202001">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ResponseBusinessEntity201408">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="awefEntity" nillable="true" type="AwefEntity" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="awefOperator" nillable="true" type="AwefEntity" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ResponseBusinessEntity201408">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ResponseBody">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="recordLastUpdatedDate" type="xs:date" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="ABN" type="Identifier" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="entityStatus" type="EntityStatus" />
+          <xs:element minOccurs="0" maxOccurs="1" name="ASICNumber" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="entityType" nillable="true" type="EntityType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="goodsAndServicesTax" nillable="true" type="GoodsAndServicesTax" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="dgrEndorsement" nillable="true" type="DgrEndorsementAndItemNumber" />
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element minOccurs="0" maxOccurs="1" name="legalName" type="IndividualName" />
+            <xs:element minOccurs="0" maxOccurs="1" name="mainName" type="OrganisationName" />
+          </xs:choice>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="mainTradingName" nillable="true" type="OrganisationName" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="otherTradingName" nillable="true" type="OrganisationName" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="mainBusinessPhysicalAddress" nillable="true" type="AddressDetails" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="dgrFund" nillable="true" type="DgrFundAndItemNumber" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="charityType" nillable="true" type="CharityType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="taxConcessionCharityEndorsement" nillable="true" type="CharityConcession" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="publicBenevolentInstitutionEmployer" nillable="true" type="CharitableFund" />
+          <xs:element minOccurs="0" maxOccurs="1" name="superannuationStatus" type="SuperannuationStatus" />
+          <xs:element minOccurs="0" maxOccurs="1" name="mainPostalPhysicalAddress" type="AddressFull" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="businessName" nillable="true" type="OrganisationName" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="ACNCRegistration" type="Registration" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Identifier">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="identifierValue" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="isCurrentIndicator" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="replacedIdentifierValue" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="replacedFrom" type="xs:date" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="EntityStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="entityStatusCode" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveFrom" type="xs:date" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveTo" type="xs:date" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="EntityType">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="entityTypeCode" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="entityDescription" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GoodsAndServicesTax">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveFrom" type="xs:date" />
+      <xs:element minOccurs="1" maxOccurs="1" name="effectiveTo" type="xs:date" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IndividualName">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Individual">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="effectiveFrom" type="xs:date" />
+          <xs:element minOccurs="1" maxOccurs="1" name="effectiveTo" type="xs:date" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Individual">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="fullName" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="givenName" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="otherGivenName" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="familyName" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="OrganisationName">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Organisation">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="effectiveFrom" type="xs:date" />
+          <xs:choice minOccurs="1" maxOccurs="1">
+            <xs:element minOccurs="1" maxOccurs="1" name="effectiveTo" type="xs:date" />
+            <xs:element minOccurs="0" maxOccurs="1" name="effectiveToBlank" />
+          </xs:choice>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SuperannuationStatus">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="complyingCode" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="complyingDescription" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="regulator" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="exceptionMessage" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResponseBusinessEntity201408" nillable="true" type="ResponseBusinessEntity201408" />
+  <xs:element name="DGREndorsement" nillable="true" type="DGREndorsement" />
+  <xs:element name="DgrFund" nillable="true" type="DgrFund" />
+  <xs:element name="EntityStatus" nillable="true" type="EntityStatus" />
+  <xs:element name="EntityType" nillable="true" type="EntityType" />
+  <xs:element name="Exception" nillable="true" type="AbnLookupException" />
+  <xs:complexType name="AbnLookupException" />
+  <xs:element name="request" nillable="true" type="ExternalRequest" />
+  <xs:element name="ExternalRequestABNCharityFilter" nillable="true" type="ExternalRequestABNCharityFilter" />
+  <xs:element name="ExternalRequestABNEventFilter" nillable="true" type="ExternalRequestABNEventFilter" />
+  <xs:element name="ExternalRequestABNFilter" nillable="true" type="ExternalRequestABNFilter" />
+  <xs:element name="ExternalRequestABNStatusFilter" nillable="true" type="ExternalRequestABNStatusFilter" />
+  <xs:element name="ExternalRequestABNUpdateEventFilter" nillable="true" type="ExternalRequestABNUpdateEventFilter" />
+  <xs:element name="ExternalRequestFilterNameType" nillable="true" type="ExternalRequestFilterNameType" />
+  <xs:element name="ExternalRequestFilterNameType2012" nillable="true" type="ExternalRequestFilterNameType2012" />
+  <xs:element name="ExternalRequestFilters" nillable="true" type="ExternalRequestFilters" />
+  <xs:element name="ExternalRequestFilters2012" nillable="true" type="ExternalRequestFilters2012" />
+  <xs:element name="ExternalRequestFilterStateCode" nillable="true" type="ExternalRequestFilterStateCode" />
+  <xs:element name="ExternalRequestIdentifierSearch" nillable="true" type="ExternalRequestIdentifierSearch" />
+  <xs:element name="ExternalRequestNameSearch" nillable="true" type="ExternalRequestNameSearch" />
+  <xs:element name="ExternalRequestNameSearchAdvanced" nillable="true" type="ExternalRequestNameSearchAdvanced" />
+  <xs:element name="ExternalRequestNameSearchAdvanced2006" nillable="true" type="ExternalRequestNameSearchAdvanced2006" />
+  <xs:element name="ExternalRequestNameSearchAdvanced2012" nillable="true" type="ExternalRequestNameSearchAdvanced2012" />
+  <xs:element name="GoodsAndServicesTax" nillable="true" type="GoodsAndServicesTax" />
+  <xs:element name="Identifier" nillable="true" type="Identifier" />
+  <xs:element name="IdentifierSummary" nillable="true" type="IdentifierSummary" />
+  <xs:complexType name="IdentifierSummary">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="identifierValue" type="xs:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="identifierStatus" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Individual" nillable="true" type="Individual" />
+  <xs:element name="IndividualName" nillable="true" type="IndividualName" />
+  <xs:element name="IndividualSimpleName" nillable="true" type="IndividualSimpleName" />
+  <xs:complexType name="IndividualSimpleName">
+    <xs:complexContent mixed="false">
+      <xs:extension base="Individual">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="score" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="isCurrentIndicator" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Name" nillable="true" type="Name" />
+  <xs:complexType name="Name" />
+  <xs:element name="NameType" type="NameType" />
+  <xs:simpleType name="NameType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="legalName" />
+      <xs:enumeration value="mainName" />
+      <xs:enumeration value="mainTradingName" />
+      <xs:enumeration value="otherTradingName" />
+      <xs:enumeration value="PBIEName" />
+      <xs:enumeration value="dgrFundName" />
+      <xs:enumeration value="businessName" />
+      <xs:enumeration value="AWEFName" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="Organisation" nillable="true" type="Organisation" />
+  <xs:element name="OrganisationName" nillable="true" type="OrganisationName" />
+  <xs:element name="OrganisationSimpleName" nillable="true" type="OrganisationSimpleName" />
+  <xs:element name="ABRPayloadSearchResults" nillable="true" type="Payload" />
+  <xs:complexType name="Payload">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="request" type="ExternalRequest" />
+      <xs:element minOccurs="0" maxOccurs="1" name="response" type="Response" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Response">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="usageStatement" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="dateRegisterLastUpdated" type="xs:date" />
+      <xs:element minOccurs="1" maxOccurs="1" name="dateTimeRetrieved" type="xs:dateTime" />
+      <xs:choice minOccurs="1" maxOccurs="1">
+        <xs:element minOccurs="0" maxOccurs="1" name="businessEntity" type="ResponseBusinessEntity" />
+        <xs:element minOccurs="0" maxOccurs="1" name="businessEntity200506" type="ResponseBusinessEntity200506" />
+        <xs:element minOccurs="0" maxOccurs="1" name="businessEntity200709" type="ResponseBusinessEntity200709" />
+        <xs:element minOccurs="0" maxOccurs="1" name="businessEntity201205" type="ResponseBusinessEntity201205" />
+        <xs:element minOccurs="0" maxOccurs="1" name="businessEntity201408" type="ResponseBusinessEntity201408" />
+        <xs:element minOccurs="0" maxOccurs="1" name="businessEntity202001" type="ResponseBusinessEntity202001" />
+        <xs:element minOccurs="0" maxOccurs="1" name="exception" type="ResponseException" />
+        <xs:element minOccurs="0" maxOccurs="1" name="abnList" type="ResponseABNList" />
+        <xs:element minOccurs="0" maxOccurs="1" name="searchResultsList" type="ResponseSearchResultsList" />
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ResponseBusinessEntity">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ResponseBody">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="recordLastUpdatedDate" type="xs:date" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="ABN" type="Identifier" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="entityStatus" type="EntityStatus" />
+          <xs:element minOccurs="0" maxOccurs="1" name="ASICNumber" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="entityType" nillable="true" type="EntityType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="goodsAndServicesTax" nillable="true" type="GoodsAndServicesTax" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="dgrEndorsement" nillable="true" type="DGREndorsement" />
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element minOccurs="0" maxOccurs="1" name="legalName" type="IndividualName" />
+            <xs:element minOccurs="0" maxOccurs="1" name="mainName" type="OrganisationName" />
+          </xs:choice>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="mainTradingName" nillable="true" type="OrganisationName" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="otherTradingName" nillable="true" type="OrganisationName" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="mainBusinessPhysicalAddress" nillable="true" type="AddressDetails" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="dgrFund" nillable="true" type="DgrFund" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ResponseBusinessEntity200506">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ResponseBusinessEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="charityType" nillable="true" type="CharityType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="taxConcessionCharityEndorsement" nillable="true" type="CharityConcession" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="publicBenevolentInstitutionEmployer" nillable="true" type="CharitableFund" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ResponseBusinessEntity200709">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ResponseBusinessEntity200506">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="superannuationStatus" type="SuperannuationStatus" />
+          <xs:element minOccurs="0" maxOccurs="1" name="mainPostalPhysicalAddress" type="AddressFull" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ResponseBusinessEntity201205">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ResponseBusinessEntity200709">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="businessName" nillable="true" type="OrganisationName" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ResponseABNList">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ResponseBody">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="numberOfRecords" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="abn" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ResponseSearchResultsList">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ResponseBody">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="numberOfRecords" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="exceedsMaximum" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="searchResultsRecord" type="SearchResultsRecord" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SearchResultsRecord">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ABN" type="IdentifierSummary" />
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element minOccurs="0" maxOccurs="1" name="legalName" type="IndividualSimpleName" />
+        <xs:element minOccurs="0" maxOccurs="1" name="mainName" type="OrganisationSimpleName" />
+        <xs:element minOccurs="0" maxOccurs="1" name="mainTradingName" type="OrganisationSimpleName" />
+        <xs:element minOccurs="0" maxOccurs="1" name="otherTradingName" type="OrganisationSimpleName" />
+        <xs:element minOccurs="0" maxOccurs="1" name="PBIEName" type="OrganisationSimpleName" />
+        <xs:element minOccurs="0" maxOccurs="1" name="AWEFName" type="OrganisationSimpleName" />
+        <xs:element minOccurs="0" maxOccurs="1" name="businessName" type="OrganisationSimpleName" />
+        <xs:element minOccurs="0" maxOccurs="1" name="dgrFundName" type="OrganisationSimpleName" />
+      </xs:choice>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="mainBusinessPhysicalAddress" nillable="true" type="AddressSimple" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RequestManager" nillable="true" type="RequestManager" />
+  <xs:complexType name="RequestManager" />
+  <xs:element name="response" nillable="true" type="Response" />
+  <xs:element name="ResponseABNList" nillable="true" type="ResponseABNList" />
+  <xs:element name="ResponseBody" nillable="true" type="ResponseBody" />
+  <xs:element name="ResponseBusinessEntity" nillable="true" type="ResponseBusinessEntity" />
+  <xs:element name="ResponseBusinessEntity200506" nillable="true" type="ResponseBusinessEntity200506" />
+  <xs:element name="ResponseBusinessEntity200709" nillable="true" type="ResponseBusinessEntity200709" />
+  <xs:element name="ResponseBusinessEntity201205" nillable="true" type="ResponseBusinessEntity201205" />
+  <xs:element name="ResponseException" nillable="true" type="ResponseException" />
+  <xs:element name="ResponseSearchResultsList" nillable="true" type="ResponseSearchResultsList" />
+  <xs:element name="ResponseSummaryList" nillable="true" type="ResponseSummaryList" />
+  <xs:complexType name="ResponseSummaryList">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="numberOfRecords" type="xs:int" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="summaryRecord" type="SummaryRecord" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SummaryRecord">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element minOccurs="0" maxOccurs="1" name="summaryException" type="SummaryException" />
+        <xs:element minOccurs="0" maxOccurs="1" name="abnSummary" type="SummaryABN" />
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SummaryException">
+    <xs:complexContent mixed="false">
+      <xs:extension base="SummaryRecord">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="exceptionDescription" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="identifierType" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="identifierValue" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SummaryABN">
+    <xs:complexContent mixed="false">
+      <xs:extension base="SummaryRecord">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="ABN" type="IdentifierSummary" />
+          <xs:element minOccurs="0" maxOccurs="1" name="ASICNumber" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="currentLegalName" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="entityType" type="EntityType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SearchResultsRecord" nillable="true" type="SearchResultsRecord" />
+  <xs:element name="SummaryABN" nillable="true" type="SummaryABN" />
+  <xs:element name="SummaryException" nillable="true" type="SummaryException" />
+  <xs:element name="SummaryRecord" nillable="true" type="SummaryRecord" />
+  <xs:element name="SuperannuationStatus" nillable="true" type="SuperannuationStatus" />
+</xs:schema>
