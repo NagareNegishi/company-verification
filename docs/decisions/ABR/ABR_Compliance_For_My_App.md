@@ -160,7 +160,21 @@ this agreement." (Indemnity)
 
 ### B7. Ongoing obligations
 
-TODO — note any audit, monitoring, or notification obligations.
+Two ongoing obligations only — the agreement is minimal compared to MBIE:
+
+1. **Keep contact details current.** Promptly notify ABR of any change to
+   email, postal address, or other contact information. ABR uses these to
+   deliver notices; a stale address means you may miss a termination notice
+   or a withdrawn-record notification.
+
+2. **Delete withdrawn records when notified.** If ABR tells you a specific
+   record has been removed (e.g. for privacy), delete all copies immediately.
+
+There are no audit, monitoring, incident-reporting, or usage-reporting
+obligations in this agreement.
+
+Source: "You are responsible for ensuring that your contact details provided to
+us remain accurate and up to date." (Use of ABN Lookup Web Services)
 
 ---
 
