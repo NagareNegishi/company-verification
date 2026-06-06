@@ -98,7 +98,16 @@ Source: "non-exclusive non-transferable licence" (Licence)
 
 ### B3. Redistribution and resale
 
-TODO — confirm whether data returned by the API can be passed to third parties, and on what terms.
+Passing data to third parties is explicitly permitted for relevant extracts.
+There is no resale or redistribution prohibition. Charging for the service
+(verification results) is not addressed as prohibited.
+
+Two limits apply to all third-party sharing:
+- "Relevant extracts" only — not a full register mirror or bulk re-export.
+- "At your own risk" — the indemnity follows you into downstream sharing.
+
+Source: "You may, at your own risk, provide relevant extracts of the ABN Lookup
+Web Services to third parties." (Use of ABN Lookup Web Services)
 
 ### B4. Excluded website categories
 
