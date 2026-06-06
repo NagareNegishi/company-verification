@@ -65,7 +65,24 @@ README notice to add:
 
 ### B1. Library vs embedded obligations
 
-TODO — confirm whether the agreement distinguishes between a library author and a deployer, or treats both the same.
+The agreement makes no formal distinction between a library author and an
+operator — it addresses only "you" (the registered GUID holder). However, the
+non-transferable licence and the indemnity clause (which explicitly covers
+"unauthorised use") have clear practical consequences for each mode:
+
+| | Library (others self-host) | Embedded in my product |
+|---|---|---|
+| Who calls ABR | the deployer | only me, my GUID |
+| Who registers + accepts agreement | each deployer | only me |
+| Who carries indemnity | each deployer | me |
+| Third-party data sharing | deployer may provide extracts "at own risk" | I provide results to users |
+
+Library mode pushes all obligations to the deployer. Embedded mode puts them
+all on me. Keep the two separate in docs so a library user does not assume I
+have covered what is actually theirs.
+
+Source: "a non-exclusive non-transferable licence" (Licence); "your use
+(including unauthorised use)" (Indemnity)
 
 ### B2. Credential sharing
 
