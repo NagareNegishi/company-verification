@@ -139,7 +139,24 @@ in your possession or control." (Use of ABN Lookup Web Services)
 
 ### B6. Indemnity
 
-TODO — note any indemnity clause affecting the library author.
+Broad, uncapped indemnity covering any loss, damage, cost, expense, claim,
+proceeding, or liability that ABR incurs to any third party arising from your
+use of the service — including unauthorised use of your GUID.
+
+Key implications:
+- A leaked or shared GUID that causes a third-party claim comes back to you.
+- ABR is also indemnified for its own lawful exercise of rights under the
+  agreement (e.g. suspending your access).
+- There is no monetary cap and no carve-out for ABR negligence in this clause.
+
+This is the main reason to gate access, avoid logging raw ABN responses, and
+ensure every deployer holds their own GUID (see B1, B2).
+
+Source: "You indemnify us against any loss, damage, cost, expense, claim,
+proceeding or liability of any kind that we (or our personnel) may incur to any
+third party arising out of your use (including unauthorised use) of or access to
+the ABN Lookup Web Services, or the lawful exercise of our rights pursuant to
+this agreement." (Indemnity)
 
 ### B7. Ongoing obligations
 
