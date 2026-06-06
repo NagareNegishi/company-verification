@@ -24,20 +24,18 @@ Source: https://abr.business.gov.au (checked 2026-06-05)
 
 ### A1. Signup terms clause
 
-The agreement contains no clause requiring terms to be passed to end users or
-library consumers. Third-party data sharing is explicitly permitted with no
-downstream terms obligation attached.
+No clause requires terms to be passed to end users or library consumers.
+Third-party sharing is explicitly permitted.
 
 Source: "You may, at your own risk, provide relevant extracts of the ABN Lookup
 Web Services to third parties." (Use of ABN Lookup Web Services)
 
 ### A2. Attribution line
 
-The agreement imposes no attribution requirement. There is no clause requiring
-a source line, timestamp, or logo when displaying data.
+No attribution required. No source line, timestamp, or logo when displaying data.
 
-The one related obligation is negative: you must not imply that the Commonwealth
-endorses, approves, or is affiliated with your product or use of the data.
+One restriction: do not imply Commonwealth endorsement or affiliation with your
+product.
 
 Source: "You must not represent or imply, or allow any associated person to
 represent or imply, that the Commonwealth endorses, approves, or is affiliated
@@ -45,19 +43,19 @@ in any way with you..." (Use of ABN Lookup Web Services)
 
 ### A3. Repo notice for library users
 
-The licence granted by the agreement is non-transferable. Each deployer must
-register their own GUID at https://abr.business.gov.au/Documentation/WebServiceRegistration
-and accept the Web Services Agreement. Shipping a GUID in source code or
-configuration would allow others to use a licence that is not theirs.
+The licence is non-transferable. Each deployer must register their own GUID at
+https://abr.business.gov.au/Documentation/WebServiceRegistration and accept the
+Web Services Agreement. Do not ship a GUID in source code or config.
 
 Source: "a non-exclusive non-transferable licence to access and use the ABN
 Lookup Web Services" (Licence)
 
 README notice to add:
-  You must supply your own ABR GUID. Register at
-  https://abr.business.gov.au/Documentation/WebServiceRegistration
-  and accept the Web Services Agreement before use. Do not share or
-  commit your GUID to source control.
+
+> You must supply your own ABR GUID. Register at
+> https://abr.business.gov.au/Documentation/WebServiceRegistration
+> and accept the Web Services Agreement before use. Do not share or
+> commit your GUID to source control.
 
 ---
 
@@ -65,10 +63,10 @@ README notice to add:
 
 ### B1. Library vs embedded obligations
 
-The agreement makes no formal distinction between a library author and an
-operator — it addresses only "you" (the registered GUID holder). However, the
-non-transferable licence and the indemnity clause (which explicitly covers
-"unauthorised use") have clear practical consequences for each mode:
+The agreement addresses only "you" (the registered GUID holder) with no
+distinction between library author and operator. The non-transferable licence
+and the indemnity clause (which covers "unauthorised use") play out differently
+depending on how the service is deployed:
 
 | | Library (others self-host) | Embedded in my product |
 |---|---|---|
@@ -77,45 +75,42 @@ non-transferable licence and the indemnity clause (which explicitly covers
 | Who carries indemnity | each deployer | me |
 | Third-party data sharing | deployer may provide extracts "at own risk" | I provide results to users |
 
-Library mode pushes all obligations to the deployer. Embedded mode puts them
-all on me. Keep the two separate in docs so a library user does not assume I
-have covered what is actually theirs.
+Library mode puts obligations on each deployer. Embedded mode puts them on me.
+Keep the two separate in docs so a library user does not assume I have covered
+their obligations.
 
 Source: "a non-exclusive non-transferable licence" (Licence); "your use
 (including unauthorised use)" (Indemnity)
 
 ### B2. Never ship a GUID
 
-The licence is non-transferable. Another party using your GUID is exercising a
-right they were never granted. The agreement does not name GUID sharing
-explicitly, but the non-transferable licence makes the practical obligation clear.
+The licence is non-transferable. Another party using your GUID holds a right
+they were never granted.
 
 - No GUID in `.env`, `docker-compose.yml`, `devcontainer.json`, `appsettings.json`,
   CI secrets, fixtures, or commit history.
-- Ship `.env.example` with a blank placeholder; gitignore the real `.env`.
+- Ship `.env.example` with a blank placeholder. Gitignore the real `.env`.
 
 Source: "non-exclusive non-transferable licence" (Licence)
 
 ### B3. Redistribution and resale
 
-Passing data to third parties is explicitly permitted for relevant extracts.
-There is no resale or redistribution prohibition. Charging for the service
-(verification results) is not addressed as prohibited.
+Third-party sharing is explicitly permitted for relevant extracts. No resale or
+redistribution prohibition. Charging for the service is not restricted.
 
-Two limits apply to all third-party sharing:
-- "Relevant extracts" only — not a full register mirror or bulk re-export.
-- "At your own risk" — the indemnity follows you into downstream sharing.
+Two limits on all third-party sharing:
+- Relevant extracts only, not a full register mirror or bulk re-export.
+- At your own risk: the indemnity applies to downstream sharing too.
 
 Source: "You may, at your own risk, provide relevant extracts of the ABN Lookup
 Web Services to third parties." (Use of ABN Lookup Web Services)
 
 ### B4. Excluded website categories
 
-The agreement contains no excluded website categories. There is no list of
-prohibited site types (unlike the MBIE agreement which has a Schedule 1).
+No excluded website categories (unlike MBIE, which has a Schedule 1 list).
 
-The only related restriction is a general conduct rule: data must not be used
-in any way that is false, misleading, or deceptive.
+The only related restriction: data must not be used in a way that is false,
+misleading, or deceptive.
 
 Source: "You must not... use the ABN Lookup Web Services in any way that is or
 may be false, misleading or deceptive." (Use of ABN Lookup Web Services)
@@ -123,15 +118,14 @@ may be false, misleading or deceptive." (Use of ABN Lookup Web Services)
 ### B5. Termination and data deletion
 
 No general data deletion obligation on termination. The agreement can be ended
-by either party (30 days notice from ABR; immediate by you).
+by either party (30 days notice from ABR, immediate by you).
 
 The only deletion obligation is record-specific: if ABR notifies you that a
-particular entry has been withdrawn from the database (e.g. for privacy),
-you must immediately delete all copies of that record in your possession.
-This applies during the agreement, not only at termination.
+particular entry has been withdrawn (e.g. for privacy), delete all copies
+immediately. This applies during the agreement, not only at termination.
 
-A stateless service with no database satisfies this trivially for live API
-responses. Any cached or logged ABN records would be in scope.
+A stateless service with no database has nothing to delete for live API
+responses. Cached or logged ABN records would be in scope.
 
 Source: "If we notify you that specific information has been withdrawn you must
 immediately take all reasonable action to delete all copies of that information
@@ -140,17 +134,16 @@ in your possession or control." (Use of ABN Lookup Web Services)
 ### B6. Indemnity
 
 Broad, uncapped indemnity covering any loss, damage, cost, expense, claim,
-proceeding, or liability that ABR incurs to any third party arising from your
-use of the service — including unauthorised use of your GUID.
+proceeding, or liability that ABR incurs to any third party from your use,
+including unauthorised use of your GUID.
 
-Key implications:
 - A leaked or shared GUID that causes a third-party claim comes back to you.
 - ABR is also indemnified for its own lawful exercise of rights under the
   agreement (e.g. suspending your access).
-- There is no monetary cap and no carve-out for ABR negligence in this clause.
+- No monetary cap. No carve-out for ABR negligence.
 
-This is the main reason to gate access, avoid logging raw ABN responses, and
-ensure every deployer holds their own GUID (see B1, B2).
+Gate access, avoid logging raw ABN responses, and ensure every deployer holds
+their own GUID (see B1, B2).
 
 Source: "You indemnify us against any loss, damage, cost, expense, claim,
 proceeding or liability of any kind that we (or our personnel) may incur to any
@@ -160,18 +153,16 @@ this agreement." (Indemnity)
 
 ### B7. Ongoing obligations
 
-Two ongoing obligations only — the agreement is minimal compared to MBIE:
+Two obligations. Far fewer than MBIE.
 
-1. **Keep contact details current.** Promptly notify ABR of any change to
-   email, postal address, or other contact information. ABR uses these to
-   deliver notices; a stale address means you may miss a termination notice
-   or a withdrawn-record notification.
+1. **Keep contact details current.** Notify ABR of any change to email or
+   postal address. ABR sends notices to the address on record, so a stale
+   address means missed termination or withdrawn-record notices.
 
 2. **Delete withdrawn records when notified.** If ABR tells you a specific
    record has been removed (e.g. for privacy), delete all copies immediately.
 
-There are no audit, monitoring, incident-reporting, or usage-reporting
-obligations in this agreement.
+No audit, monitoring, incident-reporting, or usage-reporting obligations.
 
 Source: "You are responsible for ensuring that your contact details provided to
 us remain accurate and up to date." (Use of ABN Lookup Web Services)
@@ -180,7 +171,7 @@ us remain accurate and up to date." (Use of ABN Lookup Web Services)
 
 ## Pre-read checklist
 
-- [ ] Read full Web Services Agreement at https://abr.business.gov.au/Tools/WebServicesAgreement
-- [ ] Fill in Part A sections above
-- [ ] Fill in Part B sections above
-- [ ] Decide whether library mode and embedded mode carry different obligations
+- [x] Read full Web Services Agreement at https://abr.business.gov.au/Tools/WebServicesAgreement
+- [x] Fill in Part A sections above
+- [x] Fill in Part B sections above
+- [x] Decide whether library mode and embedded mode carry different obligations (see B1)
