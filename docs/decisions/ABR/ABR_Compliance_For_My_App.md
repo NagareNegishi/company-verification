@@ -111,7 +111,14 @@ Web Services to third parties." (Use of ABN Lookup Web Services)
 
 ### B4. Excluded website categories
 
-TODO — confirm whether the agreement prohibits displaying data on certain types of website.
+The agreement contains no excluded website categories. There is no list of
+prohibited site types (unlike the MBIE agreement which has a Schedule 1).
+
+The only related restriction is a general conduct rule: data must not be used
+in any way that is false, misleading, or deceptive.
+
+Source: "You must not... use the ABN Lookup Web Services in any way that is or
+may be false, misleading or deceptive." (Use of ABN Lookup Web Services)
 
 ### B5. Termination and data deletion
 
