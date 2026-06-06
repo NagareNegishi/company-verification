@@ -7,10 +7,8 @@ adapter: abr
 # Country this adapter serves. ISO 3166-1 alpha-2 code.
 country: AU
 
-# Status codes treated as active. All other codes are excluded.
-# Codes come from the ABR API (identifierStatus field).
-active_statuses:
-  - "Active"
+# Active filtering is handled server-side via activeABNsOnly=Y on
+# ABRSearchByNameAdvancedSimpleProtocol2017. No status codes to declare.
 
 # Entity type codes included in results. All other types are excluded.
 # Codes come from SearchByABNv202001 (entityTypeCode field, 3-letter format).

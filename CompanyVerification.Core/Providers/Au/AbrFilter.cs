@@ -1,23 +1,12 @@
 namespace CompanyVerification.Core.Providers.Au;
 
 /// <summary>
-/// Filter definitions for the ABR adapter. Declares which ABN status codes
-/// and entity type codes are treated as active, verifiable companies.
+/// Filter definitions for the ABR adapter. Declares which entity type codes are treated as valid companies.
+/// Active filtering is handled server-side via the <c>activeABNsOnly=Y</c> parameter.
 /// Override or replace to customise adapter filtering without modifying the adapter.
 /// </summary>
 public static class AbrFilter
 {
-    /// <summary>
-    /// ABN status codes that map to "active". All other status codes are excluded.
-    /// </summary>
-    /// <remarks>
-    /// Source: <see href="https://abr.business.gov.au/Documentation/WebServiceMethods"/>
-    /// </remarks>
-    public static readonly IReadOnlySet<string> ActiveStatusCodes = new HashSet<string>
-    {
-        "Active"
-    };
-
     /// <summary>
     /// ABR entity type codes included as valid companies. Any type not in this set is excluded.
     /// IND (Individual/Sole Trader), UIE (Other Unincorporated Entity), PTR, and FPT are

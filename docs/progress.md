@@ -75,8 +75,8 @@ and decisions made along the way. Update this file as work progresses.
 3. **ABR entity type codes** — look up the full list of ABN entity type codes from the ABR API schema or WSDL; decide which count as valid employers (exclude individuals/sole traders); document in `docs/decisions/ABR/`
 5. **README notice** — add the A3 library user notice from `ABR_Compliance_For_My_App.md`: users must register their own GUID at `abr.business.gov.au/Documentation/WebServiceRegistration`
 6. **`Providers/Au/.env.example`** — `ABR_GUID` placeholder
-7. **`AbrFilter.cs`** — active status set (`"Active"`); included entity type codes from step 4
-8. **`conformance.yaml`** — AU statuses, AU entity types; no `source_register` (no attribution obligation)
+7. **`AbrFilter.cs`** — included entity type codes; active filtering is server-side via `activeABNsOnly=Y`
+8. **`conformance.yaml`** — AU entity types; no status codes (server-side filtering); no `source_register` (no attribution obligation)
 
 ### Coding — AU (ABR) adapter
 
