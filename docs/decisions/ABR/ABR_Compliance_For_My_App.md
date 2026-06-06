@@ -122,7 +122,20 @@ may be false, misleading or deceptive." (Use of ABN Lookup Web Services)
 
 ### B5. Termination and data deletion
 
-TODO — confirm whether data must be deleted when the agreement is terminated.
+No general data deletion obligation on termination. The agreement can be ended
+by either party (30 days notice from ABR; immediate by you).
+
+The only deletion obligation is record-specific: if ABR notifies you that a
+particular entry has been withdrawn from the database (e.g. for privacy),
+you must immediately delete all copies of that record in your possession.
+This applies during the agreement, not only at termination.
+
+A stateless service with no database satisfies this trivially for live API
+responses. Any cached or logged ABN records would be in scope.
+
+Source: "If we notify you that specific information has been withdrawn you must
+immediately take all reasonable action to delete all copies of that information
+in your possession or control." (Use of ABN Lookup Web Services)
 
 ### B6. Indemnity
 
