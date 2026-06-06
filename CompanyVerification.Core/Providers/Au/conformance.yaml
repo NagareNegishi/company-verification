@@ -1,0 +1,33 @@
+# Conformance file for the ABR adapter.
+# Filter rules are AU-specific.
+
+# Identifier for this adapter.
+adapter: abr
+
+# Country this adapter serves. ISO 3166-1 alpha-2 code.
+country: AU
+
+# Status codes treated as active. All other codes are excluded.
+# Codes come from the ABR API (identifierStatus field).
+active_statuses:
+  - "Active"
+
+# Entity type codes included in results. All other types are excluded.
+# Codes come from SearchByABNv202001 (entityTypeCode field, 3-letter format).
+# A nil or absent entityTypeCode is excluded by default.
+included_entity_types:
+  - PRV  # Australian Private Company
+  - PUB  # Australian Public Company
+  - OIE  # Other Incorporated Entity
+  - COP  # Co-operative
+  - LPT  # Limited Partnership
+  - TRT  # Other Trust
+  - CGE  # Commonwealth Government Entity
+  - SGE  # State Government Entity
+  - TGE  # Territory Government Entity
+  - LGE  # Local Government Entity
+
+# No additional fields. The ABR Web Services Agreement imposes no attribution
+# or timestamp obligation on the adapter or on callers.
+# Source: ABR_Compliance_For_My_App.md A1, A2
+additional_fields:
