@@ -5,7 +5,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: NZBN adapter — compliance prep in progress; remaining items before coding starts
+## Status: AU adapter — pre-coding setup in progress
 
 ---
 
@@ -53,26 +53,39 @@ and decisions made along the way. Update this file as work progresses.
 - `.gitignore` updated: `docs/decisions/MBIE/*.pdf` added
 - MBIE API Access Agreement PDF (`docs/decisions/MBIE/`) read and verified; gitignored
 
+### AU adapter — pre-coding setup
+
+- ABR Web Services Agreement read and verified; compliance docs complete (`docs/decisions/ABR/`)
+- `abr.business.gov.au` added to `.devcontainer/project-firewall.sh` firewall allowlist
+- API endpoint confirmed: `https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/ABRSearchByNameSimpleProtocol` (HTTP GET, returns XML)
+- Issue draft created: `.github/drafts/issue-draft.md`
+
 
 ---
 
 ## Next
 
-### Remaining compliance before coding starts
+### Remaining items before NZBN coding starts
 
 1. **A3 README notice** — add the library user credentials warning (clause 7.7): users must supply their own NZBN key; register at `portal.api.business.govt.nz`; sign the MBIE API Access Agreement
 2. **Verify PDF not tracked** — `docs/decisions/MBIE/*.pdf` is gitignored but if the file was staged before the rule was added, run `git rm --cached` to untrack it
 
-### Coding — NZBN adapter
+### Remaining items before AU (ABR) coding starts
 
-3. **Smoke test** — once sandbox key arrives, run a live `curl` against the sandbox to confirm real response shape and entity type codes
-4. **Fill `conformance.yaml`** — active statuses, full employer entity type list; matches `NzbnFilter.cs`
-5. **`NzbnResponse.cs`** — model response types from observed data; must capture `sourceRegister` field from API response (needed for A2 attribution per clause 4.8); folder: `CompanyVerification.Core/Providers/Nz/`
-6. **`NzbnClient.cs`** — typed HTTP client; calls `api.business.govt.nz`
-7. **`NzbnProvider.cs`** — extend `VerificationProviderBase`; use `NzbnFilter` for status and entity type; map to `CompanyCandidate`; record `DateTimeOffset.UtcNow` as `searched_at` before the HTTP call; put `source_register` (from response) and `searched_at` (ISO 8601) into `AdditionalFields`
-8. **Test suite** — xUnit tests covering active returned, dissolved filtered, wrong type filtered, not-found, upstream outage
-9. **Register in `Program.cs`** — DI wiring for `IHttpClientFactory`, typed client, `IVerificationProvider`
-10. **API controller** — thin HTTP wrapper over `IVerificationProvider`
+3. **ABR entity type codes** — look up the full list of ABN entity type codes from the ABR API schema or WSDL; decide which count as valid employers (exclude individuals/sole traders); document in `docs/decisions/ABR/`
+5. **README notice** — add the A3 library user notice from `ABR_Compliance_For_My_App.md`: users must register their own GUID at `abr.business.gov.au/Documentation/WebServiceRegistration`
+6. **`Providers/Au/.env.example`** — `ABR_GUID` placeholder
+7. **`AbrFilter.cs`** — active status set (`"Active"`); included entity type codes from step 4
+8. **`conformance.yaml`** — AU statuses, AU entity types; no `source_register` (no attribution obligation)
+
+### Coding — AU (ABR) adapter
+
+9. **`AbrResponse.cs`** — XML response model; `ABRSearchByNameSimpleProtocol` returns XML
+10. **`AbrClient.cs`** — HTTP GET to `abr.business.gov.au`; GUID in query string; parse XML response; no sandbox
+11. **`AbrProvider.cs`** — extend `VerificationProviderBase`; filter with `AbrFilter`; map to `CompanyCandidate`
+12. **Test suite** — xUnit: active returned, cancelled filtered, wrong type filtered, not-found, upstream outage
+13. **Register in `Program.cs`** — DI wiring alongside the NZBN adapter
+14. **API controller** — thin HTTP wrapper over `IVerificationProvider` (shared with NZBN)
 
 ---
 
