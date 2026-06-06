@@ -45,7 +45,19 @@ in any way with you..." (Use of ABN Lookup Web Services)
 
 ### A3. Repo notice for library users
 
-TODO — confirm whether the agreement bans GUID sharing (equivalent to MBIE clause 7.7). If yes, write the notice and add it to the README.
+The licence granted by the agreement is non-transferable. Each deployer must
+register their own GUID at https://abr.business.gov.au/Documentation/WebServiceRegistration
+and accept the Web Services Agreement. Shipping a GUID in source code or
+configuration would allow others to use a licence that is not theirs.
+
+Source: "a non-exclusive non-transferable licence to access and use the ABN
+Lookup Web Services" (Licence)
+
+README notice to add:
+  You must supply your own ABR GUID. Register at
+  https://abr.business.gov.au/Documentation/WebServiceRegistration
+  and accept the Web Services Agreement before use. Do not share or
+  commit your GUID to source control.
 
 ---
 
