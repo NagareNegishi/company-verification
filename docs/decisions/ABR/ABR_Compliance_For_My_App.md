@@ -84,9 +84,17 @@ have covered what is actually theirs.
 Source: "a non-exclusive non-transferable licence" (Licence); "your use
 (including unauthorised use)" (Indemnity)
 
-### B2. Credential sharing
+### B2. Never ship a GUID
 
-TODO — confirm whether the agreement prohibits sharing the authentication GUID. If yes, each deployer must register their own.
+The licence is non-transferable. Another party using your GUID is exercising a
+right they were never granted. The agreement does not name GUID sharing
+explicitly, but the non-transferable licence makes the practical obligation clear.
+
+- No GUID in `.env`, `docker-compose.yml`, `devcontainer.json`, `appsettings.json`,
+  CI secrets, fixtures, or commit history.
+- Ship `.env.example` with a blank placeholder; gitignore the real `.env`.
+
+Source: "non-exclusive non-transferable licence" (Licence)
 
 ### B3. Redistribution and resale
 
