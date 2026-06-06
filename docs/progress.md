@@ -57,7 +57,7 @@ and decisions made along the way. Update this file as work progresses.
 
 - ABR Web Services Agreement read and verified; compliance docs complete (`docs/decisions/ABR/`)
 - `abr.business.gov.au` added to `.devcontainer/project-firewall.sh` firewall allowlist
-- API endpoint confirmed: `https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/ABRSearchByNameSimpleProtocol` (HTTP GET, returns XML)
+- API endpoint confirmed: `https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/ABRSearchByNameAdvancedSimpleProtocol2017` (HTTP GET, returns XML)
 - Issue draft created: `.github/drafts/issue-draft.md`
 
 
@@ -80,7 +80,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ### Coding — AU (ABR) adapter
 
-9. **`AbrResponse.cs`** — XML response model; `ABRSearchByNameSimpleProtocol` returns XML
+9. **`AbrResponse.cs`** — XML response model; `ABRSearchByNameAdvancedSimpleProtocol2017` returns XML
 10. **`AbrClient.cs`** — HTTP GET to `abr.business.gov.au`; GUID in query string; parse XML response; no sandbox
 11. **`AbrProvider.cs`** — extend `VerificationProviderBase`; filter with `AbrFilter`; map to `CompanyCandidate`
 12. **Test suite** — xUnit: active returned, cancelled filtered, wrong type filtered, not-found, upstream outage

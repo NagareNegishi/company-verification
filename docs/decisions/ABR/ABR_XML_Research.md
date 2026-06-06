@@ -11,15 +11,19 @@ No NuGet package or SDK exists for the ABR API. Implementation uses raw HTTP GET
 
 ## Name search — ABRSearchByNameAdvancedSimpleProtocol2017
 
-Use this over `ABRSearchByNameSimpleProtocol`. The 2017 variant is the only name search
-operation that accepts `activeABNsOnly=Y`, which filters cancelled ABNs server-side.
+Five Search by Name versions exist. Each has a SOAP-only variant and a SimpleProtocol
+variant (HTTP GET/POST). Use `ABRSearchByNameAdvancedSimpleProtocol2017`. It is the
+latest, covers all Advanced2012 options, and adds `activeABNsOnly` to filter
+cancelled ABNs server-side.
+
+Source: https://abr.business.gov.au/Documentation/WebServiceMethods
 
 Returns `SearchResultsRecord` per result:
 
 ```
 ABN[]
   identifierValue      string   11-digit ABN
-  identifierStatus     string   "Active" | "Cancelled" | "Not Active"
+  identifierStatus     string   xs:string; no enum defined in schema
 
 [choice, one or more name elements]
   legalName            IndividualSimpleName   individual entity

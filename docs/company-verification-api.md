@@ -87,7 +87,7 @@ Not a C# type — reference for adapter authors and conformance declarations. Ea
 | Status category | NZ (NZBN) | AU (ABR) | UK (Companies House) |
 |---|---|---|---|
 | **Active (include)** | `Registered` | `Active` | `active`, `registered` |
-| Cancelled | — | `Cancelled`, `Not Active` | `voluntary-arrangement` |
+| Cancelled | — | — | `voluntary-arrangement` |
 | Removed | `Removed`, `Deregistered` | — | `dissolved`, `removed`, `converted-closed` |
 | In liquidation | — | — | `liquidation`, `receivership`, `administration` |
 | Other | anything else | anything else | anything else |
@@ -105,7 +105,7 @@ UK is included for future reference — it is not MVP scope.
 
 **Australia — ABN Lookup (optional native; otherwise via fallback)**
 - Free; requires a free authentication GUID. SOAP or plain HTTP GET/POST.
-- Status: `Active` / `Cancelled` / `Not Active`, updated daily, plus a status-date field to compare on recheck. Returns the ASIC number (ACN).
+- Status updated daily, plus a status-date field to compare on recheck. Returns the ASIC number (ACN).
 - Limitations: no director/officer data (would need ASIC for that); trading names not updated since 2012 — match on legal name.
 
 **Fallback — none**
