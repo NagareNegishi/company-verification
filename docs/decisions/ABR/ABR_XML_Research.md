@@ -154,12 +154,21 @@ only free official source of entity type for Australian businesses.
 
 ### Configurable search parameters
 
-`searchWidth`, `minimumScore`, and `maxSearchResults` are all caller-chosen with no hard API cap.
-They are exposed as properties on `AbrOptions` so each deployment can tune them without code changes.
-Defaults: `searchWidth=Typical`, `minimumScore=60`, `maxSearchResults=30`.
+`searchWidth`, `minimumScore`, and `maxSearchResults` are configurable with no hard API cap.
+They are properties on `AbrNameSearchRequest` with defaults: `searchWidth=Typical`, `minimumScore=60`,
+`maxSearchResults=30`. `AbrOptions` holds only the authentication GUID.
 
 `maxSearchResults=30` is a conservative default. Higher values increase result count but also increase
-the number of parallel call-2 requests. Callers needing more results can raise it via `AbrOptions`.
+the number of parallel call-2 requests.
+
+### Class design
+
+- `AbrOptions` — GUID credential only. One instance per deployment.
+- `AbrNameSearchRequest` — call-1 settings object. Constructed once, reused per search.
+  `name` and `guid` are passed to `ToQueryString(name, guid)` at call time, not stored.
+- `AbrAbnLookupRequest` — no configurable properties. `includeHistoricalDetails` is always `N`;
+  verification requires current status only. `abn` and `guid` passed to `ToQueryString` at call time.
+- Base URLs are constants in `AbrProvider`. The ABR endpoints do not vary by environment.
 
 ### HTTP GET parameters (SimpleProtocol)
 
