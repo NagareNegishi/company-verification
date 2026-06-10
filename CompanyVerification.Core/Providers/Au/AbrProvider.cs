@@ -42,9 +42,19 @@ public sealed class AbrProvider : VerificationProviderBase
     public override IReadOnlyList<string> SupportedCountries { get; } = ["AU"];
 
     /// <inheritdoc/>
-    protected override Task<IReadOnlyList<CompanyCandidate>> SearchCore(
+    protected override async Task<IReadOnlyList<CompanyCandidate>> SearchCore(
         string name, string country, CancellationToken cancellationToken)
     {
+        var http = _httpClientFactory.CreateClient();
+
+        var qs = _nameSearch.ToQueryString(name, _options.Guid);
+        var xml = await http.GetStringAsync($"{NameSearchUrl}?{qs}", cancellationToken);
+
+        var abns = ParseNameSearchAbns(xml);
+        if (abns.Count == 0)
+            return [];
+
+        // parallel ABN lookups, filter, assemble
         throw new NotImplementedException();
     }
 }
