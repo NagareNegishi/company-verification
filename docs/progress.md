@@ -59,6 +59,8 @@ and decisions made along the way. Update this file as work progresses.
 - `abr.business.gov.au` added to `.devcontainer/project-firewall.sh` firewall allowlist
 - API endpoint confirmed: `https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/ABRSearchByNameAdvancedSimpleProtocol2017` (HTTP GET, returns XML)
 - Issue draft created: `.github/drafts/issue-draft.md`
+- `AbrFilter.cs` — included entity type codes; active filtering is server-side via `activeABNsOnly=Y`
+- `conformance.yaml` — AU entity types declared; no status codes; no `additional_fields`
 
 ### Config pattern
 
@@ -66,6 +68,7 @@ and decisions made along the way. Update this file as work progresses.
 - Root `.env.example` created — single file a developer copies on first setup; aggregates all adapter keys
 - Per-adapter `.env.example` files updated: marked reference-only, point to root `.env.example`, key names updated to match .NET convention
 - `docker-compose.yml` updated: `version: '3.8'` removed (deprecated); `env_file: ../.env` added with `required: false` (Docker Compose v2.24.0+)
+- `.env` must live at project root (not `.devcontainer/`); existing `.devcontainer/.env` should be moved to project root
 
 
 ---
@@ -79,10 +82,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ### Remaining items before AU (ABR) coding starts
 
-3. **ABR entity type codes** — look up the full list of ABN entity type codes from the ABR API schema or WSDL; decide which count as valid employers (exclude individuals/sole traders); document in `docs/decisions/ABR/`
-5. **README notice** — add the A3 library user notice from `ABR_Compliance_For_My_App.md`: users must register their own GUID at `abr.business.gov.au/Documentation/WebServiceRegistration`
-6. **`AbrFilter.cs`** — included entity type codes; active filtering is server-side via `activeABNsOnly=Y`
-8. **`conformance.yaml`** — AU entity types; no status codes (server-side filtering); no `source_register` (no attribution obligation)
+3. **README notice** — add the A3 library user notice from `ABR_Compliance_For_My_App.md`: users must register their own GUID at `abr.business.gov.au/Documentation/WebServiceRegistration`
 
 ### Coding — AU (ABR) adapter
 
