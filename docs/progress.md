@@ -60,6 +60,13 @@ and decisions made along the way. Update this file as work progresses.
 - API endpoint confirmed: `https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/ABRSearchByNameAdvancedSimpleProtocol2017` (HTTP GET, returns XML)
 - Issue draft created: `.github/drafts/issue-draft.md`
 
+### Config pattern
+
+- Adapter credentials use `IOptions<T>` per adapter; env vars use `__` as section separator (`NZBN__SubscriptionKey`, `ABR__Guid`)
+- Root `.env.example` created — single file a developer copies on first setup; aggregates all adapter keys
+- Per-adapter `.env.example` files updated: marked reference-only, point to root `.env.example`, key names updated to match .NET convention
+- `docker-compose.yml` updated: `version: '3.8'` removed (deprecated); `env_file: ../.env` added with `required: false` (Docker Compose v2.24.0+)
+
 
 ---
 
@@ -74,8 +81,7 @@ and decisions made along the way. Update this file as work progresses.
 
 3. **ABR entity type codes** — look up the full list of ABN entity type codes from the ABR API schema or WSDL; decide which count as valid employers (exclude individuals/sole traders); document in `docs/decisions/ABR/`
 5. **README notice** — add the A3 library user notice from `ABR_Compliance_For_My_App.md`: users must register their own GUID at `abr.business.gov.au/Documentation/WebServiceRegistration`
-6. **`Providers/Au/.env.example`** — `ABR_GUID` placeholder
-7. **`AbrFilter.cs`** — included entity type codes; active filtering is server-side via `activeABNsOnly=Y`
+6. **`AbrFilter.cs`** — included entity type codes; active filtering is server-side via `activeABNsOnly=Y`
 8. **`conformance.yaml`** — AU entity types; no status codes (server-side filtering); no `source_register` (no attribution obligation)
 
 ### Coding — AU (ABR) adapter
@@ -105,6 +111,7 @@ and decisions made along the way. Update this file as work progresses.
 | Contract enforcement | Interface + abstract base class | Interface for DI/testability; base class for guaranteed validation via Template Method pattern (`SearchCore`) |
 | Adapter country declaration | `SupportedCountries` on interface | Enables generic routing layer; compiler enforces it on every adapter |
 | Adapter priority | API layer's concern, not the adapter's | Adapters declare which countries they handle; which adapter wins for a given country is decided at the composition root, not inside the adapter |
+| Adapter config | `IOptions<T>` per adapter, root `.env` | Standard .NET pattern; env vars use `__` separator; root `.env.example` is the developer setup file; per-adapter files are reference only |
 | Fallback availability | Optional — service deploys without it | Missing credentials: startup warning, fallback countries return "unsupported". Invalid credentials: startup alert, same runtime behaviour. Native adapters unaffected either way |
 | Name search flexibility | Partial names accepted | Registries handle case-insensitive substring matching; typo tolerance is not provided |
 | NZBN API access | Subscription key only | Read-only public data; OAuth2 not needed |
