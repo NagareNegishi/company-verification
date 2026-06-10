@@ -1,0 +1,26 @@
+# ABR adapter — manual test
+# @guid reads ABR__Guid from the workspace .env file.
+# Requires VS Code REST Client extension (humao.rest-client).
+# Without it, replace {{$dotenv ABR__Guid}} with your GUID directly.
+
+@guid = {{$dotenv ABR__Guid}}
+
+# Change @name to test different searches
+@name = Microsoft
+
+###
+
+# Step 1 — name search
+# Returns XML list of matching ABNs. entityTypeCode is NOT in this response.
+# @name nameSearch
+GET https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/ABRSearchByNameAdvancedSimpleProtocol2017?name={{name}}&postcode=&legalName=Y&tradingName=N&businessName=N&activeABNsOnly=Y&NSW=N&SA=N&ACT=N&VIC=N&WA=N&NT=N&QLD=N&TAS=N&authenticationGuid={{guid}}&searchWidth=typical&minimumScore=0&maxSearchResults=10
+
+###
+
+# Step 2 — ABN detail lookup
+# Picks the first ABN from the step 1 response automatically.
+# To inspect a different result, override @abn manually below.
+# Returns entityTypeCode (3-letter code e.g. PRV, PUB) needed for entity type filtering.
+@abn = {{nameSearch.response.body.//*[local-name()='identifierValue'][1]}}
+
+GET https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/SearchByABNv202001?searchString={{abn}}&includeHistoricalDetails=N&authenticationGuid={{guid}}
