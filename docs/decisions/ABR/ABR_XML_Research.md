@@ -170,6 +170,28 @@ the number of parallel call-2 requests.
   verification requires current status only. `abn` and `guid` passed to `ToQueryString` at call time.
 - Base URLs are constants in `AbrProvider`. The ABR endpoints do not vary by environment.
 
+### XML parsing
+
+Uses `System.Xml.Linq` (`XDocument`, `XElement`). No NuGet package required.
+
+ABR responses may include an XML namespace on the root element. Using `.Elements("name")` silently
+fails when a namespace is present — `e.Name == "name"` only matches the no-namespace form.
+Decision: navigate with `.Descendants().Where(e => e.Name.LocalName == "name")` throughout.
+`LocalName` strips the namespace prefix and matches regardless.
+
+Name and entity type are both taken from call-2 (`businessEntity202001`). Call-1 parsing extracts
+ABNs only. This keeps the call-1 parser minimal and avoids duplicating name extraction logic.
+
+Source: https://learn.microsoft.com/en-us/dotnet/api/system.xml.linq
+
+### Implementation progress
+
+Steps complete: `AbrOptions`, `AbrNameSearchRequest`, `AbrAbnLookupRequest`, `AbrProvider` skeleton,
+call-1 HTTP + ABN extraction (`ParseNameSearchAbns`).
+
+Remaining: call-2 parallel lookup (`Task.WhenAll`, `ParseAbnLookupResult`), filter + assemble
+(`AbrFilter`, build `CompanyCandidate`), unit tests.
+
 ### HTTP GET parameters (SimpleProtocol)
 
 `searchString` (ABN, 11 digits), `includeHistoricalDetails` (`N`), `authenticationGuid` (note: not `guid`).
