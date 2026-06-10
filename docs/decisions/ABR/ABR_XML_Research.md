@@ -45,6 +45,27 @@ Source: https://abr.business.gov.au/Documentation/WebServiceMethods
 > "None of the name search methods return entity type data in search results."
 Source: `ABNLookup_schema.xsd` — `SearchResultsRecord` type
 
+### HTTP GET parameters (SimpleProtocol)
+
+Source: WSDL — `ABRSearchByNameAdvancedSimpleProtocol2017HttpGetIn`
+
+All three nameType flags must be present. Omitting any returns HTTP 500 "Missing parameter: X".
+They are Y/N flags declaring which name field to search — `name` is the search term, not any of these.
+
+| Parameter | Use | Notes |
+|---|---|---|
+| `name` | search string | |
+| `postcode` | empty | optional filter |
+| `legalName` | `Y` | search in legal names |
+| `tradingName` | `N` | data not updated since 2012 |
+| `businessName` | `N` | |
+| `activeABNsOnly` | `Y` | server-side active filter |
+| `NSW` `SA` `ACT` `VIC` `WA` `NT` `QLD` `TAS` | `N` | all must be present; `N` = national search |
+| `authenticationGuid` | GUID | not `guid` |
+| `searchWidth` | `typical` | |
+| `minimumScore` | `0` | |
+| `maxSearchResults` | `10` | |
+
 ---
 
 ## ABN detail — SearchByABNv202001
