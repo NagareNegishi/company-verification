@@ -57,4 +57,33 @@ public sealed class AbrProvider : VerificationProviderBase
         // parallel ABN lookups, filter, assemble
         throw new NotImplementedException();
     }
+
+    // -------------------------------------------------------------------------
+    // XML parsers
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Extracts ABNs from an <c>ABRSearchByNameAdvancedSimpleProtocol2017</c> response.
+    /// Returns an empty list if the response contains no <c>searchResultsRecord</c> elements
+    /// (e.g. no matches, or ABR returned an <c>exception</c> element instead).
+    /// </summary>
+    private static IReadOnlyList<string> ParseNameSearchAbns(string xml)
+    {
+        var doc = XDocument.Parse(xml);
+
+        var records = doc.Descendants()
+            .Where(e => e.Name.LocalName == "searchResultsRecord");
+
+        var abns = new List<string>();
+        foreach (var record in records)
+        {
+            var abn = record.Descendants()
+                .FirstOrDefault(e => e.Name.LocalName == "identifierValue")
+                ?.Value;
+
+            if (!string.IsNullOrWhiteSpace(abn))
+                abns.Add(abn);
+        }
+        return abns;
+    }
 }
