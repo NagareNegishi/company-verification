@@ -62,9 +62,9 @@ They are Y/N flags declaring which name field to search — `name` is the search
 | `activeABNsOnly` | `Y` | server-side active filter |
 | `NSW` `SA` `ACT` `VIC` `WA` `NT` `QLD` `TAS` | `N` | all must be present; `N` = national search |
 | `authenticationGuid` | GUID | not `guid` |
-| `searchWidth` | `typical` | |
-| `minimumScore` | `0` | |
-| `maxSearchResults` | `10` | |
+| `searchWidth` | `Typical` | valid values: `Typical`, `Narrow` |
+| `minimumScore` | `60` | official docs: accepted range is 50–100 (positive integers); `0` is not valid |
+| `maxSearchResults` | configurable | no hard cap; API default is 200; see AbrOptions |
 
 ---
 
@@ -151,3 +151,16 @@ Decision: configurable, default exclude.
 
 ASIC has no public API. Only third-party paid wrappers exist. The ABR second call is the
 only free official source of entity type for Australian businesses.
+
+### Configurable search parameters
+
+`searchWidth`, `minimumScore`, and `maxSearchResults` are all caller-chosen with no hard API cap.
+They are exposed as properties on `AbrOptions` so each deployment can tune them without code changes.
+Defaults: `searchWidth=Typical`, `minimumScore=60`, `maxSearchResults=30`.
+
+`maxSearchResults=30` is a conservative default. Higher values increase result count but also increase
+the number of parallel call-2 requests. Callers needing more results can raise it via `AbrOptions`.
+
+### HTTP GET parameters (SimpleProtocol)
+
+`searchString` (ABN, 11 digits), `includeHistoricalDetails` (`N`), `authenticationGuid` (note: not `guid`).
