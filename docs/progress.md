@@ -69,6 +69,10 @@ and decisions made along the way. Update this file as work progresses.
 - No separate `AbrResponse.cs` or `AbrClient.cs` — XML parsing and HTTP calls absorbed directly into `AbrProvider`
 - `Microsoft.Extensions.Http` added to `Core.csproj` via `dotnet package add` — required for `IHttpClientFactory`
 
+### AU adapter — tests (pure logic)
+
+- `VerificationProviderBaseTests.cs` — 12 tests passing: name validation (null, whitespace, too long, control character, angle bracket), country validation (null, empty, wrong length, non-letter), normalisation (name trimmed, country uppercased)
+
 ### Config pattern
 
 - Adapter credentials use `IOptions<T>` per adapter; env vars use `__` as section separator (`NZBN__SubscriptionKey`, `ABR__Guid`)
@@ -89,7 +93,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ### Coding — AU (ABR) adapter
 
-12. **Test suite** — xUnit: active returned, cancelled filtered, wrong type filtered, not-found, upstream outage
+12. **Test suite (remaining)** — xUnit for `AbrProvider`: active returned, cancelled filtered, wrong type filtered, not-found, upstream outage (requires fake HTTP handler)
 13. **Register in `Program.cs`** — DI wiring alongside the NZBN adapter
 14. **API controller** — thin HTTP wrapper over `IVerificationProvider` (shared with NZBN)
 
