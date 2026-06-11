@@ -185,4 +185,48 @@ public sealed class AbrProviderTests
         Assert.Contains(results, r => r.RegistryId == "11111111111" && r.Name == "Acme Pty Ltd");
         Assert.Contains(results, r => r.RegistryId == "22222222222" && r.Name == "Acme Holdings Pty Ltd");
     }
+
+    [Fact]
+    public async Task Search_MixedEntityTypes_ReturnsOnlyIncluded()
+    {
+        // name search returns two ABNs — one company, one individual
+        var nameSearchXml = """
+            <root>
+              <searchResultsRecord>
+                <ABN><identifierValue>11111111111</identifierValue></ABN>
+              </searchResultsRecord>
+              <searchResultsRecord>
+                <ABN><identifierValue>22222222222</identifierValue></ABN>
+              </searchResultsRecord>
+            </root>
+            """;
+
+        // PRV = private company, included
+        var acme1Xml = """
+            <root>
+              <businessEntity202001>
+                <entityType><entityTypeCode>PRV</entityTypeCode></entityType>
+                <mainName><organisationName>Acme Pty Ltd</organisationName></mainName>
+              </businessEntity202001>
+            </root>
+            """;
+
+        // IND = Individual/Sole Trader, excluded — name still matches the search term
+        var acme2Xml = """
+            <root>
+              <businessEntity202001>
+                <entityType><entityTypeCode>IND</entityTypeCode></entityType>
+                <mainName><organisationName>Acme Trading</organisationName></mainName>
+              </businessEntity202001>
+            </root>
+            """;
+
+        // 11111111111 passes the filter; 22222222222 is excluded due to entity type
+        var provider = MakeProvider(nameSearchXml, abn => abn == "11111111111" ? acme1Xml : acme2Xml);
+
+        var results = await provider.Search("Acme", "AU");
+
+        Assert.Single(results);
+        Assert.Equal("11111111111", results[0].RegistryId);
+    }
 }
