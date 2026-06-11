@@ -26,6 +26,18 @@ Steps:
 
 Never commit your key to source control.
 
+## ABR API credentials
+
+To use the Australian adapter you must supply your own ABR GUID.
+The GUID used during development of this library cannot be shared or redistributed.
+
+Steps:
+1. Register at [abr.business.gov.au/Documentation/WebServiceRegistration](https://abr.business.gov.au/Documentation/WebServiceRegistration)
+2. Accept the Web Services Agreement
+3. Set the GUID in your environment as `ABR__Guid`
+
+Never commit your GUID to source control.
+
 ## Status
 
 Early development. New Zealand (NZBN) is the primary target. Australia (ABR) is planned as a native adapter. Countries without a native adapter return "unsupported".
