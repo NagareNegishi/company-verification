@@ -186,11 +186,10 @@ Source: https://learn.microsoft.com/en-us/dotnet/api/system.xml.linq
 
 ### Implementation progress
 
-Steps complete: `AbrOptions`, `AbrNameSearchRequest`, `AbrAbnLookupRequest`, `AbrProvider` skeleton,
-call-1 HTTP + ABN extraction (`ParseNameSearchAbns`).
+All adapter code complete. Remaining: unit tests.
 
-Remaining: call-2 parallel lookup (`Task.WhenAll`, `ParseAbnLookupResult`), filter + assemble
-(`AbrFilter`, build `CompanyCandidate`), unit tests.
+Complete: `AbrOptions`, `AbrNameSearchRequest`, `AbrAbnLookupRequest`, `AbrFilter`, `AbrProvider`
+(call-1 name search, call-2 parallel lookup via `Task.WhenAll`, `ParseAbnLookupResult`, filter and assemble).
 
 ### HTTP GET parameters (SimpleProtocol)
 

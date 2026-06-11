@@ -5,7 +5,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: AU adapter — pre-coding setup in progress
+## Status: AU adapter — coding in progress
 
 ---
 
@@ -62,6 +62,13 @@ and decisions made along the way. Update this file as work progresses.
 - `AbrFilter.cs` — included entity type codes; active filtering is server-side via `activeABNsOnly=Y`
 - `conformance.yaml` — AU entity types declared; no status codes; no `additional_fields`
 
+### AU adapter — coding
+
+- `README.md` — ABR GUID registration notice added (A3 from `ABR_Compliance_For_My_App.md`)
+- `AbrProvider.cs` — `SearchCore` complete: call-2 parallel lookups via `Task.WhenAll`, `ParseAbnLookupResult` parses entity type and name, `AbrFilter` drops excluded types
+- No separate `AbrResponse.cs` or `AbrClient.cs` — XML parsing and HTTP calls absorbed directly into `AbrProvider`
+- `Microsoft.Extensions.Http` added to `Core.csproj` via `dotnet package add` — required for `IHttpClientFactory`
+
 ### Config pattern
 
 - Adapter credentials use `IOptions<T>` per adapter; env vars use `__` as section separator (`NZBN__SubscriptionKey`, `ABR__Guid`)
@@ -80,15 +87,8 @@ and decisions made along the way. Update this file as work progresses.
 1. **A3 README notice** — add the library user credentials warning (clause 7.7): users must supply their own NZBN key; register at `portal.api.business.govt.nz`; sign the MBIE API Access Agreement
 2. **Verify PDF not tracked** — `docs/decisions/MBIE/*.pdf` is gitignored but if the file was staged before the rule was added, run `git rm --cached` to untrack it
 
-### Remaining items before AU (ABR) coding starts
-
-3. **README notice** — add the A3 library user notice from `ABR_Compliance_For_My_App.md`: users must register their own GUID at `abr.business.gov.au/Documentation/WebServiceRegistration`
-
 ### Coding — AU (ABR) adapter
 
-9. **`AbrResponse.cs`** — XML response model; `ABRSearchByNameAdvancedSimpleProtocol2017` returns XML
-10. **`AbrClient.cs`** — HTTP GET to `abr.business.gov.au`; GUID in query string; parse XML response; no sandbox
-11. **`AbrProvider.cs`** — extend `VerificationProviderBase`; filter with `AbrFilter`; map to `CompanyCandidate`
 12. **Test suite** — xUnit: active returned, cancelled filtered, wrong type filtered, not-found, upstream outage
 13. **Register in `Program.cs`** — DI wiring alongside the NZBN adapter
 14. **API controller** — thin HTTP wrapper over `IVerificationProvider` (shared with NZBN)
