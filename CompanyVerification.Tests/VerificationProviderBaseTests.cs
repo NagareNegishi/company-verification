@@ -72,4 +72,11 @@ public sealed class VerificationProviderBaseTests
         await _provider.Search("  Acme  ", "AU");
         Assert.Equal("Acme", _provider.CapturedName);
     }
+
+    [Fact]
+    public async Task Search_UppercasesCountryBeforeSearchCore()
+    {
+        await _provider.Search("Acme", "au");
+        Assert.Equal("AU", _provider.CapturedCountry);
+    }
 }
