@@ -1,3 +1,5 @@
+using System.Xml.Linq;
+
 namespace CompanyVerification.Core.Providers.Au;
 
 /// <summary>
@@ -54,8 +56,16 @@ public sealed class AbrProvider : VerificationProviderBase
         if (abns.Count == 0)
             return [];
 
-        // parallel ABN lookups, filter, assemble
-        throw new NotImplementedException();
+        // parallel ABN lookups
+        var tasks = abns.Select(async abn =>
+        {
+            var abnXml = await http.GetStringAsync(
+                $"{AbnLookupUrl}?{_abnLookup.ToQueryString(abn, _options.Guid)}", cancellationToken);
+            return ParseAbnLookupResult(abnXml, abn);
+        });
+
+        var results = await Task.WhenAll(tasks);
+        return results.OfType<CompanyCandidate>().ToList(); // null (excluded) entries dropped here
     }
 
 
