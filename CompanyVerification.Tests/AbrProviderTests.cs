@@ -14,6 +14,15 @@ public sealed class AbrProviderTests
     }
 
     // Builds an AbrProvider backed by FakeHttpHandler so tests never hit the real ABR API.
+    private static AbrProvider MakeProvider(string nameSearchXml, Func<string, string> abnLookupResolver)
+    {
+        var handler = new FakeHttpHandler(nameSearchXml, abnLookupResolver);
+        var client  = new HttpClient(handler);
+        var factory = new StubHttpClientFactory(client);
+        return new AbrProvider(factory, new AbrOptions { Guid = "test-guid" });
+    }
+
+    // overload used when all ABN lookups return the same response
     private static AbrProvider MakeProvider(string nameSearchXml, string abnLookupXml)
     {
         var handler = new FakeHttpHandler(nameSearchXml, abnLookupXml);
