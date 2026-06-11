@@ -4,9 +4,9 @@ using System.Text;
 namespace CompanyVerification.Tests;
 
 /// <summary>
-/// Fake HTTP handler for ABR adapter tests. Intercepts outgoing HTTP calls and
-/// returns preset XML based on the URL path. Throws for any URL not recognised —
-/// prevents silently swallowing unexpected calls.
+/// Fake HTTP handler for ABR adapter tests.
+/// Intercepts outgoing HTTP calls and returns preset XML based on the URL path.
+/// Throws for any URL not recognised.
 /// </summary>
 internal sealed class FakeHttpHandler : DelegatingHandler
 {
