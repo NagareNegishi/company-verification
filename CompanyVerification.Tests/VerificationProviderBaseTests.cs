@@ -24,6 +24,10 @@ public sealed class VerificationProviderBaseTests
 
     // ── name validation ──────────────────────────────────────────────────────
 
+    [Fact]
+    public async Task Search_NullName_Throws() =>
+        await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search(null!, "AU"));
+
     // ── country validation ───────────────────────────────────────────────────
 
     // ── normalisation ────────────────────────────────────────────────────────
