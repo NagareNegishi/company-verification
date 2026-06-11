@@ -94,4 +94,30 @@ public sealed class AbrProviderTests
 
         Assert.Empty(results);
     }
+
+    [Fact]
+    public async Task Search_AbnLookupMissingEntity_ReturnsEmpty()
+    {
+        var nameSearchXml = """
+            <root>
+              <searchResultsRecord>
+                <ABN><identifierValue>12345678901</identifierValue></ABN>
+              </searchResultsRecord>
+            </root>
+            """;
+
+        // ABR returns an error element instead of businessEntity202001
+        var abnLookupXml = """
+            <root>
+              <exception>
+                <exceptionCode>SearchUnavailable</exceptionCode>
+              </exception>
+            </root>
+            """;
+
+        var provider = MakeProvider(nameSearchXml, abnLookupXml);
+        var results  = await provider.Search("Acme", "AU");
+
+        Assert.Empty(results);
+    }
 }
