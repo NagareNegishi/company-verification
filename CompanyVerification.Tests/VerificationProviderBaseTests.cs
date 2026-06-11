@@ -54,5 +54,11 @@ public sealed class VerificationProviderBaseTests
     public async Task Search_EmptyCountry_Throws() =>
         await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("Acme", ""));
 
+    [Theory]
+    [InlineData("A")]
+    [InlineData("AUS")]
+    public async Task Search_WrongLengthCountry_Throws(string country) =>
+        await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("Acme", country));
+
     // ── normalisation ────────────────────────────────────────────────────────
 }
