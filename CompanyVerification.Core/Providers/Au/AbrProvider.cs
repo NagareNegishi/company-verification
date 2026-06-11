@@ -58,9 +58,31 @@ public sealed class AbrProvider : VerificationProviderBase
         throw new NotImplementedException();
     }
 
-    // -------------------------------------------------------------------------
-    // XML parsers
-    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Extracts ABNs from an <c>ABRSearchByNameAdvancedSimpleProtocol2017</c> response.
+    /// Returns an empty list if the response contains no <c>searchResultsRecord</c> elements
+    /// (e.g. no matches, or ABR returned an <c>exception</c> element instead).
+    /// </summary>
+    private static IReadOnlyList<string> ParseNameSearchAbns(string xml)
+    {
+        var doc = XDocument.Parse(xml);
+        var records = doc.Descendants()
+            .Where(e => e.Name.LocalName == "searchResultsRecord");
+
+        var abns = new List<string>();
+        foreach (var record in records)
+        {
+            var abn = record.Descendants()
+                .FirstOrDefault(e => e.Name.LocalName == "identifierValue")
+                ?.Value;
+
+            if (!string.IsNullOrWhiteSpace(abn))
+                abns.Add(abn);
+        }
+        return abns;
+    }
+
 
     /// <summary>
     /// Parses a <c>SearchByABNv202001</c> response and returns a <see cref="CompanyCandidate"/>
@@ -82,9 +104,11 @@ public sealed class AbrProvider : VerificationProviderBase
             ?.Descendants().FirstOrDefault(e => e.Name.LocalName == "entityTypeCode")
             ?.Value;
 
+        // unclassifiable entities are excluded by default
         if (string.IsNullOrWhiteSpace(entityTypeCode))
             return null;
 
+        // entity type not in the included set
         if (!AbrFilter.IncludedEntityTypes.Contains(entityTypeCode))
             return null;
 
@@ -100,28 +124,5 @@ public sealed class AbrProvider : VerificationProviderBase
         return new CompanyCandidate(abn, name, "AU");
     }
 
-    /// <summary>
-    /// Extracts ABNs from an <c>ABRSearchByNameAdvancedSimpleProtocol2017</c> response.
-    /// Returns an empty list if the response contains no <c>searchResultsRecord</c> elements
-    /// (e.g. no matches, or ABR returned an <c>exception</c> element instead).
-    /// </summary>
-    private static IReadOnlyList<string> ParseNameSearchAbns(string xml)
-    {
-        var doc = XDocument.Parse(xml);
 
-        var records = doc.Descendants()
-            .Where(e => e.Name.LocalName == "searchResultsRecord");
-
-        var abns = new List<string>();
-        foreach (var record in records)
-        {
-            var abn = record.Descendants()
-                .FirstOrDefault(e => e.Name.LocalName == "identifierValue")
-                ?.Value;
-
-            if (!string.IsNullOrWhiteSpace(abn))
-                abns.Add(abn);
-        }
-        return abns;
-    }
 }
