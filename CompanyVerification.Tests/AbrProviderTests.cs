@@ -120,4 +120,17 @@ public sealed class AbrProviderTests
 
         Assert.Empty(results);
     }
+
+    [Fact]
+    public async Task Search_CancelledToken_Throws()
+    {
+        var provider = MakeProvider(nameSearchXml: "", abnLookupXml: "");
+
+        // token is already cancelled before Search is called
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => provider.Search("Acme", "AU", cts.Token));
+    }
 }
