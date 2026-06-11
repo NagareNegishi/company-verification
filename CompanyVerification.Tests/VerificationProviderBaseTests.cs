@@ -40,6 +40,10 @@ public sealed class VerificationProviderBaseTests
     public async Task Search_NameWithControlCharacter_Throws() =>
         await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("Acme\x01Corp", "AU"));
 
+    [Fact]
+    public async Task Search_NameWithAngleBracket_Throws() =>
+        await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("Acme<Corp", "AU"));
+
     // ── country validation ───────────────────────────────────────────────────
 
     // ── normalisation ────────────────────────────────────────────────────────
