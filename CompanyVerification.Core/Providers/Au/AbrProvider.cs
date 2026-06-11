@@ -52,11 +52,12 @@ public sealed class AbrProvider : VerificationProviderBase
         var qs = _nameSearch.ToQueryString(name, _options.Guid);
         var xml = await http.GetStringAsync($"{NameSearchUrl}?{qs}", cancellationToken);
 
+        // ABR name search returns no entity type
         var abns = ParseNameSearchAbns(xml);
         if (abns.Count == 0)
             return [];
 
-        // parallel ABN lookups
+        // second call to retrieve entity type for filtering
         var tasks = abns.Select(async abn =>
         {
             var abnXml = await http.GetStringAsync(
@@ -65,7 +66,8 @@ public sealed class AbrProvider : VerificationProviderBase
         });
 
         var results = await Task.WhenAll(tasks);
-        return results.OfType<CompanyCandidate>().ToList(); // null (excluded) entries dropped here
+        // drop nulls
+        return results.OfType<CompanyCandidate>().ToList();
     }
 
 
