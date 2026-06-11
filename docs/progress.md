@@ -73,6 +73,11 @@ and decisions made along the way. Update this file as work progresses.
 
 - `VerificationProviderBaseTests.cs` — 12 tests passing: name validation (null, whitespace, too long, control character, angle bracket), country validation (null, empty, wrong length, non-letter), normalisation (name trimmed, country uppercased)
 
+### AU adapter — tests (HTTP logic)
+
+- `FakeHttpHandler.cs` — `DelegatingHandler` that intercepts HTTP calls; dispatches by URL substring; supports single fixed response or per-ABN resolver (`Func<string, string>`)
+- `AbrProviderTests.cs` — 7 tests: active company returned, excluded entity type filtered, no ABNs from name search, ABN lookup missing entity, cancelled token throws, multiple ABNs all returned, mixed entity types with partial filtering
+
 ### Config pattern
 
 - Adapter credentials use `IOptions<T>` per adapter; env vars use `__` as section separator (`NZBN__SubscriptionKey`, `ABR__Guid`)
@@ -93,7 +98,6 @@ and decisions made along the way. Update this file as work progresses.
 
 ### Coding — AU (ABR) adapter
 
-12. **Test suite (remaining)** — xUnit for `AbrProvider`: active returned, cancelled filtered, wrong type filtered, not-found, upstream outage (requires fake HTTP handler)
 13. **Register in `Program.cs`** — DI wiring alongside the NZBN adapter
 14. **API controller** — thin HTTP wrapper over `IVerificationProvider` (shared with NZBN)
 

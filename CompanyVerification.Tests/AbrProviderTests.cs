@@ -211,7 +211,7 @@ public sealed class AbrProviderTests
             </root>
             """;
 
-        // IND = Individual/Sole Trader, excluded — name still matches the search term
+        // IND = Individual/Sole Trader, excluded
         var acme2Xml = """
             <root>
               <businessEntity202001>
@@ -221,7 +221,6 @@ public sealed class AbrProviderTests
             </root>
             """;
 
-        // 11111111111 passes the filter; 22222222222 is excluded due to entity type
         var provider = MakeProvider(nameSearchXml, abn => abn == "11111111111" ? acme1Xml : acme2Xml);
 
         var results = await provider.Search("Acme", "AU");
