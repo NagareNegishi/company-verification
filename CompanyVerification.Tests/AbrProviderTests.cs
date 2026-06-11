@@ -53,4 +53,31 @@ public sealed class AbrProviderTests
         Assert.Equal("Acme Pty Ltd",  results[0].Name);
         Assert.Equal("AU",            results[0].Country);
     }
+
+    [Fact]
+    public async Task Search_ExcludedEntityType_ReturnsEmpty()
+    {
+        var nameSearchXml = """
+            <root>
+              <searchResultsRecord>
+                <ABN><identifierValue>12345678901</identifierValue></ABN>
+              </searchResultsRecord>
+            </root>
+            """;
+
+        // IND = Individual/Sole Trader — excluded from AbrFilter.IncludedEntityTypes
+        var abnLookupXml = """
+            <root>
+              <businessEntity202001>
+                <entityType><entityTypeCode>IND</entityTypeCode></entityType>
+                <mainName><organisationName>John Smith</organisationName></mainName>
+              </businessEntity202001>
+            </root>
+            """;
+
+        var provider = MakeProvider(nameSearchXml, abnLookupXml);
+        var results  = await provider.Search("John", "AU");
+
+        Assert.Empty(results);
+    }
 }
