@@ -32,6 +32,10 @@ public sealed class VerificationProviderBaseTests
     public async Task Search_WhitespaceName_Throws() =>
         await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("   ", "AU"));
 
+    [Fact]
+    public async Task Search_NameTooLong_Throws() =>
+        await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search(new string('a', 201), "AU"));
+
     // ── country validation ───────────────────────────────────────────────────
 
     // ── normalisation ────────────────────────────────────────────────────────
