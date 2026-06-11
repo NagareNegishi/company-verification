@@ -50,5 +50,9 @@ public sealed class VerificationProviderBaseTests
     public async Task Search_NullCountry_Throws() =>
         await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("Acme", null!));
 
+    [Fact]
+    public async Task Search_EmptyCountry_Throws() =>
+        await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("Acme", ""));
+
     // ── normalisation ────────────────────────────────────────────────────────
 }
