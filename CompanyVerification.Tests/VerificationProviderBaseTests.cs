@@ -46,5 +46,9 @@ public sealed class VerificationProviderBaseTests
 
     // ── country validation ───────────────────────────────────────────────────
 
+    [Fact]
+    public async Task Search_NullCountry_Throws() =>
+        await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("Acme", null!));
+
     // ── normalisation ────────────────────────────────────────────────────────
 }
