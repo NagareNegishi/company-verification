@@ -22,7 +22,7 @@ public sealed class AbrProviderTests
         return new AbrProvider(factory, new AbrOptions { Guid = "test-guid" });
     }
 
-    // overload used when all ABN lookups return the same response
+    // overload for tests with a single fixed ABN lookup response
     private static AbrProvider MakeProvider(string nameSearchXml, string abnLookupXml)
     {
         var handler = new FakeHttpHandler(nameSearchXml, abnLookupXml);
@@ -158,8 +158,7 @@ public sealed class AbrProviderTests
             </root>
             """;
 
-        // same response for both ABN lookups — RegistryId comes from the ABN parameter, not the XML
-        var abnLookupXml = """
+        var acme1Xml = """
             <root>
               <businessEntity202001>
                 <entityType><entityTypeCode>PRV</entityTypeCode></entityType>
@@ -168,11 +167,22 @@ public sealed class AbrProviderTests
             </root>
             """;
 
-        var provider = MakeProvider(nameSearchXml, abnLookupXml);
-        var results  = await provider.Search("Acme", "AU");
+        var acme2Xml = """
+            <root>
+              <businessEntity202001>
+                <entityType><entityTypeCode>PRV</entityTypeCode></entityType>
+                <mainName><organisationName>Acme Holdings Pty Ltd</organisationName></mainName>
+              </businessEntity202001>
+            </root>
+            """;
+
+        // each ABN resolves to a different Acme company
+        var provider = MakeProvider(nameSearchXml, abn => abn == "11111111111" ? acme1Xml : acme2Xml);
+
+        var results = await provider.Search("Acme", "AU");
 
         Assert.Equal(2, results.Count);
-        Assert.Contains(results, r => r.RegistryId == "11111111111");
-        Assert.Contains(results, r => r.RegistryId == "22222222222");
+        Assert.Contains(results, r => r.RegistryId == "11111111111" && r.Name == "Acme Pty Ltd");
+        Assert.Contains(results, r => r.RegistryId == "22222222222" && r.Name == "Acme Holdings Pty Ltd");
     }
 }
