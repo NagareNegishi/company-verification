@@ -133,4 +133,37 @@ public sealed class AbrProviderTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(
             () => provider.Search("Acme", "AU", cts.Token));
     }
+
+    [Fact]
+    public async Task Search_MultipleAbns_ReturnsAllCandidates()
+    {
+        // name search returns two ABNs
+        var nameSearchXml = """
+            <root>
+              <searchResultsRecord>
+                <ABN><identifierValue>11111111111</identifierValue></ABN>
+              </searchResultsRecord>
+              <searchResultsRecord>
+                <ABN><identifierValue>22222222222</identifierValue></ABN>
+              </searchResultsRecord>
+            </root>
+            """;
+
+        // same response for both ABN lookups — RegistryId comes from the ABN parameter, not the XML
+        var abnLookupXml = """
+            <root>
+              <businessEntity202001>
+                <entityType><entityTypeCode>PRV</entityTypeCode></entityType>
+                <mainName><organisationName>Acme Pty Ltd</organisationName></mainName>
+              </businessEntity202001>
+            </root>
+            """;
+
+        var provider = MakeProvider(nameSearchXml, abnLookupXml);
+        var results  = await provider.Search("Acme", "AU");
+
+        Assert.Equal(2, results.Count);
+        Assert.Contains(results, r => r.RegistryId == "11111111111");
+        Assert.Contains(results, r => r.RegistryId == "22222222222");
+    }
 }
