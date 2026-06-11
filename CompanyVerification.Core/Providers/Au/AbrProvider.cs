@@ -63,6 +63,44 @@ public sealed class AbrProvider : VerificationProviderBase
     // -------------------------------------------------------------------------
 
     /// <summary>
+    /// Parses a <c>SearchByABNv202001</c> response and returns a <see cref="CompanyCandidate"/>
+    /// if the entity passes type filtering, or <c>null</c> if it should be excluded.
+    /// A nil or absent <c>entityTypeCode</c> returns <c>null</c>; unclassifiable entities are excluded by default.
+    /// </summary>
+    private static CompanyCandidate? ParseAbnLookupResult(string xml, string abn)
+    {
+        var doc = XDocument.Parse(xml);
+        var entity = doc.Descendants()
+            .FirstOrDefault(e => e.Name.LocalName == "businessEntity202001");
+
+        // redundant given activeABNsOnly=Y, but guards against an ABR error response on a single lookup
+        if (entity == null)
+            return null;
+
+        var entityTypeCode = entity
+            .Descendants().FirstOrDefault(e => e.Name.LocalName == "entityType")
+            ?.Descendants().FirstOrDefault(e => e.Name.LocalName == "entityTypeCode")
+            ?.Value;
+
+        if (string.IsNullOrWhiteSpace(entityTypeCode))
+            return null;
+
+        if (!AbrFilter.IncludedEntityTypes.Contains(entityTypeCode))
+            return null;
+
+        var name = entity
+            .Descendants().FirstOrDefault(e => e.Name.LocalName == "mainName")
+            ?.Descendants().FirstOrDefault(e => e.Name.LocalName == "organisationName")
+            ?.Value;
+
+        // guards against malformed ABR data
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
+
+        return new CompanyCandidate(abn, name, "AU");
+    }
+
+    /// <summary>
     /// Extracts ABNs from an <c>ABRSearchByNameAdvancedSimpleProtocol2017</c> response.
     /// Returns an empty list if the response contains no <c>searchResultsRecord</c> elements
     /// (e.g. no matches, or ABR returned an <c>exception</c> element instead).
