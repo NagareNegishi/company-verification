@@ -65,4 +65,11 @@ public sealed class VerificationProviderBaseTests
         await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("Acme", "1Z"));
 
     // ── normalisation ────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task Search_TrimsNameBeforeSearchCore()
+    {
+        await _provider.Search("  Acme  ", "AU");
+        Assert.Equal("Acme", _provider.CapturedName);
+    }
 }
