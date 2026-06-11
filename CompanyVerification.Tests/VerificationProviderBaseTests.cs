@@ -60,5 +60,9 @@ public sealed class VerificationProviderBaseTests
     public async Task Search_WrongLengthCountry_Throws(string country) =>
         await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("Acme", country));
 
+    [Fact]
+    public async Task Search_NonLetterCountry_Throws() =>
+        await Assert.ThrowsAsync<ArgumentException>(() => _provider.Search("Acme", "1Z"));
+
     // ── normalisation ────────────────────────────────────────────────────────
 }
