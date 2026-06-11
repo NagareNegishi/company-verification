@@ -5,7 +5,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: AU adapter — pre-coding setup in progress
+## Status: AU adapter — coding in progress
 
 ---
 
@@ -57,8 +57,34 @@ and decisions made along the way. Update this file as work progresses.
 
 - ABR Web Services Agreement read and verified; compliance docs complete (`docs/decisions/ABR/`)
 - `abr.business.gov.au` added to `.devcontainer/project-firewall.sh` firewall allowlist
-- API endpoint confirmed: `https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/ABRSearchByNameSimpleProtocol` (HTTP GET, returns XML)
+- API endpoint confirmed: `https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/ABRSearchByNameAdvancedSimpleProtocol2017` (HTTP GET, returns XML)
 - Issue draft created: `.github/drafts/issue-draft.md`
+- `AbrFilter.cs` — included entity type codes; active filtering is server-side via `activeABNsOnly=Y`
+- `conformance.yaml` — AU entity types declared; no status codes; no `additional_fields`
+
+### AU adapter — coding
+
+- `README.md` — ABR GUID registration notice added (A3 from `ABR_Compliance_For_My_App.md`)
+- `AbrProvider.cs` — `SearchCore` complete: call-2 parallel lookups via `Task.WhenAll`, `ParseAbnLookupResult` parses entity type and name, `AbrFilter` drops excluded types
+- No separate `AbrResponse.cs` or `AbrClient.cs` — XML parsing and HTTP calls absorbed directly into `AbrProvider`
+- `Microsoft.Extensions.Http` added to `Core.csproj` via `dotnet package add` — required for `IHttpClientFactory`
+
+### AU adapter — tests (pure logic)
+
+- `VerificationProviderBaseTests.cs` — 12 tests passing: name validation (null, whitespace, too long, control character, angle bracket), country validation (null, empty, wrong length, non-letter), normalisation (name trimmed, country uppercased)
+
+### AU adapter — tests (HTTP logic)
+
+- `FakeHttpHandler.cs` — `DelegatingHandler` that intercepts HTTP calls; dispatches by URL substring; supports single fixed response or per-ABN resolver (`Func<string, string>`)
+- `AbrProviderTests.cs` — 7 tests: active company returned, excluded entity type filtered, no ABNs from name search, ABN lookup missing entity, cancelled token throws, multiple ABNs all returned, mixed entity types with partial filtering
+
+### Config pattern
+
+- Adapter credentials use `IOptions<T>` per adapter; env vars use `__` as section separator (`NZBN__SubscriptionKey`, `ABR__Guid`)
+- Root `.env.example` created — single file a developer copies on first setup; aggregates all adapter keys
+- Per-adapter `.env.example` files updated: marked reference-only, point to root `.env.example`, key names updated to match .NET convention
+- `docker-compose.yml` updated: `version: '3.8'` removed (deprecated); `env_file: ../.env` added with `required: false` (Docker Compose v2.24.0+)
+- `.env` must live at project root (not `.devcontainer/`); existing `.devcontainer/.env` should be moved to project root
 
 
 ---
@@ -70,20 +96,8 @@ and decisions made along the way. Update this file as work progresses.
 1. **A3 README notice** — add the library user credentials warning (clause 7.7): users must supply their own NZBN key; register at `portal.api.business.govt.nz`; sign the MBIE API Access Agreement
 2. **Verify PDF not tracked** — `docs/decisions/MBIE/*.pdf` is gitignored but if the file was staged before the rule was added, run `git rm --cached` to untrack it
 
-### Remaining items before AU (ABR) coding starts
-
-3. **ABR entity type codes** — look up the full list of ABN entity type codes from the ABR API schema or WSDL; decide which count as valid employers (exclude individuals/sole traders); document in `docs/decisions/ABR/`
-5. **README notice** — add the A3 library user notice from `ABR_Compliance_For_My_App.md`: users must register their own GUID at `abr.business.gov.au/Documentation/WebServiceRegistration`
-6. **`Providers/Au/.env.example`** — `ABR_GUID` placeholder
-7. **`AbrFilter.cs`** — active status set (`"Active"`); included entity type codes from step 4
-8. **`conformance.yaml`** — AU statuses, AU entity types; no `source_register` (no attribution obligation)
-
 ### Coding — AU (ABR) adapter
 
-9. **`AbrResponse.cs`** — XML response model; `ABRSearchByNameSimpleProtocol` returns XML
-10. **`AbrClient.cs`** — HTTP GET to `abr.business.gov.au`; GUID in query string; parse XML response; no sandbox
-11. **`AbrProvider.cs`** — extend `VerificationProviderBase`; filter with `AbrFilter`; map to `CompanyCandidate`
-12. **Test suite** — xUnit: active returned, cancelled filtered, wrong type filtered, not-found, upstream outage
 13. **Register in `Program.cs`** — DI wiring alongside the NZBN adapter
 14. **API controller** — thin HTTP wrapper over `IVerificationProvider` (shared with NZBN)
 
@@ -105,6 +119,7 @@ and decisions made along the way. Update this file as work progresses.
 | Contract enforcement | Interface + abstract base class | Interface for DI/testability; base class for guaranteed validation via Template Method pattern (`SearchCore`) |
 | Adapter country declaration | `SupportedCountries` on interface | Enables generic routing layer; compiler enforces it on every adapter |
 | Adapter priority | API layer's concern, not the adapter's | Adapters declare which countries they handle; which adapter wins for a given country is decided at the composition root, not inside the adapter |
+| Adapter config | `IOptions<T>` per adapter, root `.env` | Standard .NET pattern; env vars use `__` separator; root `.env.example` is the developer setup file; per-adapter files are reference only |
 | Fallback availability | Optional — service deploys without it | Missing credentials: startup warning, fallback countries return "unsupported". Invalid credentials: startup alert, same runtime behaviour. Native adapters unaffected either way |
 | Name search flexibility | Partial names accepted | Registries handle case-insensitive substring matching; typo tolerance is not provided |
 | NZBN API access | Subscription key only | Read-only public data; OAuth2 not needed |

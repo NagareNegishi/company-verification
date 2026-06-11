@@ -11,9 +11,9 @@ Source: https://abr.business.gov.au (checked 2026-06-05)
 - Registration is self-serve. GUID issued immediately. No human approval. (~2 minutes)
 - Accepting the Web Services Agreement is required before the GUID is issued.
 - Agreement URL: https://abr.business.gov.au/Tools/WebServicesAgreement — **read 2026-06-06**
-- Name search is available on the free tier: `ABRSearchByName`, `ABRSearchByNameSimpleProtocol`
+- Name search is available on the free tier: `ABRSearchByName`, `ABRSearchByNameSimpleProtocol`, `ABRSearchByNameAdvancedSimpleProtocol2017`. The 2017 variant is used here (latest, HTTP GET, supports `activeABNsOnly`).
 - API speaks SOAP or HTTP GET/POST with XML. JSON endpoint exists but covers limited methods only.
-- Status values returned by the API: `Active`, `Cancelled`, `Not Active`
+- Status field `identifierStatus` is returned per ABN. Values are xs:string; no formal enumeration in the schema.
 - No sandbox environment. The API is production-only and read-only.
 - ABN is 11 digits. ACN (ASIC company number) is returned alongside the ABN for company entities.
 - Trading names have not been updated since 2012. Legal name is the reliable match field.

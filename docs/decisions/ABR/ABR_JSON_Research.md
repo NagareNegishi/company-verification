@@ -45,7 +45,7 @@ enumerate individual record fields.
 
 ```
 abn        string   required
-abnStatus  string   required   "Active" | "Cancelled" | "Not Active"
+abnStatus  string   required
 name       string   required
 nameType   string   required   "legalName" | "mainName" | "mainTradingName" | ...
 postcode   string   required
@@ -69,7 +69,7 @@ Source: https://abr.business.gov.au/json/
 Abn                    string
 Acn                    string
 EntityName             string
-AbnStatus              string   "Active" | "Cancelled" | "Not Active"
+AbnStatus              string
 AbnStatusEffectiveFrom string
 EntityTypeCode         string   3-letter code (e.g. "PRV", "PUB")
 EntityTypeName         string   human-readable (e.g. "Australian Private Company")
