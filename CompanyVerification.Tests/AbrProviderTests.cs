@@ -80,4 +80,18 @@ public sealed class AbrProviderTests
 
         Assert.Empty(results);
     }
+
+    [Fact]
+    public async Task Search_NoAbnsFromNameSearch_ReturnsEmpty()
+    {
+        // name search returns no records — no ABNs to look up
+        var nameSearchXml = """
+            <root></root>
+            """;
+
+        var provider = MakeProvider(nameSearchXml, abnLookupXml: "");
+        var results  = await provider.Search("Unknown Co", "AU");
+
+        Assert.Empty(results);
+    }
 }
