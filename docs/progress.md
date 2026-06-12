@@ -98,8 +98,12 @@ and decisions made along the way. Update this file as work progresses.
 
 ### Coding — AU (ABR) adapter
 
-13. **Register in `Program.cs`** — DI wiring alongside the NZBN adapter
-14. **API controller** — thin HTTP wrapper over `IVerificationProvider` (shared with NZBN)
+13. **`Program.cs` — DI setup**
+    - `AddHttpClient()` for `IHttpClientFactory`
+    - `Configure<AbrOptions>("ABR")` — binds `ABR__Guid` env var
+    - Register `AbrProvider` as `IVerificationProvider` (Singleton, factory lambda — `AbrProvider` takes plain `AbrOptions`, not `IOptions<>`)
+14. **`VerificationController`** — injects `IEnumerable<IVerificationProvider>`, routes by `SupportedCountries`
+15. **`GET /verify?name=&country=`** — 200 (results or `[]`), 400 (validation), 404 (unsupported country)
 
 ---
 
