@@ -86,6 +86,11 @@ and decisions made along the way. Update this file as work progresses.
 - `docker-compose.yml` updated: `version: '3.8'` removed (deprecated); `env_file: ../.env` added with `required: false` (Docker Compose v2.24.0+)
 - `.env` must live at project root (not `.devcontainer/`); existing `.devcontainer/.env` should be moved to project root
 
+### API wiring — AU adapter
+
+- `AbrProvider` constructor switched to `IOptions<AbrOptions>` — unwraps to plain `AbrOptions` at construction; tests updated to use `Options.Create(...)`
+- `Program.cs` — `AddHttpClient()`, `Configure<AbrOptions>("ABR")`, `AddSingleton<IVerificationProvider, AbrProvider>()`
+- `VerificationController` — `GET /verify?name=&country=`; routes by `SupportedCountries`; 200 (results or `[]`), 400 (validation), 404 (unsupported country)
 
 ---
 
@@ -95,15 +100,6 @@ and decisions made along the way. Update this file as work progresses.
 
 1. **A3 README notice** — add the library user credentials warning (clause 7.7): users must supply their own NZBN key; register at `portal.api.business.govt.nz`; sign the MBIE API Access Agreement
 2. **Verify PDF not tracked** — `docs/decisions/MBIE/*.pdf` is gitignored but if the file was staged before the rule was added, run `git rm --cached` to untrack it
-
-### Coding — AU (ABR) adapter
-
-13. **`Program.cs` — DI setup**
-    - `AddHttpClient()` for `IHttpClientFactory`
-    - `Configure<AbrOptions>("ABR")` — binds `ABR__Guid` env var
-    - Register `AbrProvider` as `IVerificationProvider` (Singleton, factory lambda — `AbrProvider` takes plain `AbrOptions`, not `IOptions<>`)
-14. **`VerificationController`** — injects `IEnumerable<IVerificationProvider>`, routes by `SupportedCountries`
-15. **`GET /verify?name=&country=`** — 200 (results or `[]`), 400 (validation), 404 (unsupported country)
 
 ---
 
