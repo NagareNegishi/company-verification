@@ -11,6 +11,6 @@ public class AbrOptions
     /// <see href="https://abr.business.gov.au/Documentation/WebServiceRegistration"/>.
     /// Do not commit this value to source control.
     /// </summary>
-    public required string Guid { get; init; }
+    public string Guid { get; set; } = string.Empty;
 
 }
