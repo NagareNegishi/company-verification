@@ -1,0 +1,17 @@
+# NZBN adapter — manual test
+# @key reads NZBN__SubscriptionKey from the workspace .env file.
+# Requires VS Code REST Client extension (humao.rest-client).
+# Without it, replace {{$dotenv NZBN__SubscriptionKey}} with your key directly.
+
+@key = {{$dotenv NZBN__SubscriptionKey}}
+@baseUrl = https://api.business.govt.nz/sandbox/nzbn/v5
+
+# Change @name to test different searches
+@name = Microsoft
+
+###
+
+# Name search — returns nzbn, entityName, entityStatusCode, and entityTypeCode in one response.
+# entity-status=registered pre-filters to active entities on the server side.
+GET {{baseUrl}}/entities?search-term={{name}}&entity-status=registered&page-size=30
+Ocp-Apim-Subscription-Key: {{key}}

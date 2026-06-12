@@ -4,14 +4,15 @@ using System.Text;
 namespace CompanyVerification.Tests;
 
 /// <summary>
-/// Fake HTTP handler for ABR adapter tests. Intercepts outgoing HTTP calls and
-/// returns preset XML based on the URL path. Throws for any URL not recognised.
+/// Fake HTTP handler for adapter tests. Intercepts outgoing HTTP calls and
+/// returns preset responses based on the URL path. Throws for any URL not recognised.
 /// </summary>
 internal sealed class FakeHttpHandler : DelegatingHandler
 {
     private readonly string? _nameSearchXml;
     private readonly string? _abnLookupXml;
     private readonly Func<string, string>? _abnLookupResolver;
+    private readonly string? _json;
 
     /// <param name="nameSearchXml">
     /// XML to return for <c>ABRSearchByNameAdvancedSimpleProtocol2017</c> requests.
@@ -38,6 +39,14 @@ internal sealed class FakeHttpHandler : DelegatingHandler
         _abnLookupResolver = abnLookupResolver;
     }
 
+    /// <param name="json">
+    /// JSON to return for NZBN entity search requests.
+    /// </param>
+    public FakeHttpHandler(string json)
+    {
+        _json = json;
+    }
+
     /// <inheritdoc/>
     protected override Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request, CancellationToken cancellationToken)
@@ -60,6 +69,9 @@ internal sealed class FakeHttpHandler : DelegatingHandler
             return Task.FromResult(XmlResponse(xml));
         }
 
+        if (url.Contains("api.business.govt.nz"))
+            return Task.FromResult(JsonResponse(_json!));
+
         // any unrecognised URL is a bug in the adapter, not a test failure to swallow silently
         throw new InvalidOperationException($"Unexpected URL: {url}");
     }
@@ -76,5 +88,12 @@ internal sealed class FakeHttpHandler : DelegatingHandler
         new(HttpStatusCode.OK)
         {
             Content = new StringContent(xml, Encoding.UTF8, "text/xml")
+        };
+
+    // content-type must be application/json or GetFromJsonAsync throws
+    private static HttpResponseMessage JsonResponse(string json) =>
+        new(HttpStatusCode.OK)
+        {
+            Content = new StringContent(json, Encoding.UTF8, "application/json")
         };
 }
