@@ -5,7 +5,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: NuGet publish preparation — complete; ready to tag and publish (branch: `feat/nuget-publish`)
+## Status: CompanyVerification.Core 0.1.0-alpha published to NuGet.org — validation in progress
 
 ---
 
@@ -51,12 +51,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ## Next
 
-### Publish `CompanyVerification.Core` to NuGet.org
-
-1. Merge `feat/nuget-publish` to `main`
-2. Push tag `v0.1.0-alpha` — triggers the publish workflow
-3. Verify package appears on nuget.org
-4. Email `account@nuget.org` to reserve the `CompanyVerification` prefix
+- Email `account@nuget.org` to reserve the `CompanyVerification` prefix (cosmetic — verified checkmark)
 
 ---
 
