@@ -20,7 +20,12 @@ public sealed class VerificationControllerTests
     [Fact]
     public async Task Search_UnsupportedCountry_ReturnsNotFound()
     {
-        throw new NotImplementedException();
+        var controller = new VerificationController(
+            [new StubProvider { SupportedCountries = ["AU"] }]);
+
+        var result = await controller.Search("Acme", "XX", CancellationToken.None);
+
+        Assert.IsType<NotFoundResult>(result);
     }
 
     [Fact]
