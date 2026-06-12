@@ -93,4 +93,20 @@ public sealed class NzbnProviderTests
 
         Assert.Empty(results);
     }
+
+    [Fact]
+    public async Task Search_EmptyItems_ReturnsEmpty()
+    {
+        // entity search returns no matches
+        var json = """
+            {
+              "items": []
+            }
+            """;
+
+        var provider = MakeProvider(json);
+        var results  = await provider.Search("Unknown Co", "NZ");
+
+        Assert.Empty(results);
+    }
 }
