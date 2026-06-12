@@ -12,7 +12,19 @@ Adapters written by others define their own inclusion logic. What qualifies as "
 
 ## Usage
 
-Available as a NuGet package. The same core can also be consumed as an HTTP API or an MCP server.
+Install `CompanyVerification.Core` from NuGet, then register in your `Program.cs`:
+
+```csharp
+builder.Services.AddCompanyVerification(o =>
+{
+    o.Abr.Guid = builder.Configuration["ABR__Guid"];
+    o.Nzbn.SubscriptionKey = builder.Configuration["NZBN__SubscriptionKey"];
+});
+```
+
+If either credential is missing the app will start, log a warning, and searches for that country will fail.
+
+The same core can also be consumed as an HTTP API or an MCP server.
 
 ## NZBN API credentials
 
