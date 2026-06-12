@@ -69,6 +69,9 @@ internal sealed class FakeHttpHandler : DelegatingHandler
             return Task.FromResult(XmlResponse(xml));
         }
 
+        if (url.Contains("api.business.govt.nz"))
+            return Task.FromResult(JsonResponse(_json!));
+
         // any unrecognised URL is a bug in the adapter, not a test failure to swallow silently
         throw new InvalidOperationException($"Unexpected URL: {url}");
     }
@@ -85,5 +88,12 @@ internal sealed class FakeHttpHandler : DelegatingHandler
         new(HttpStatusCode.OK)
         {
             Content = new StringContent(xml, Encoding.UTF8, "text/xml")
+        };
+
+    // content-type must be application/json or GetFromJsonAsync throws
+    private static HttpResponseMessage JsonResponse(string json) =>
+        new(HttpStatusCode.OK)
+        {
+            Content = new StringContent(json, Encoding.UTF8, "application/json")
         };
 }
