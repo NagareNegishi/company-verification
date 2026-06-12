@@ -91,6 +91,7 @@ and decisions made along the way. Update this file as work progresses.
 - `AbrProvider` constructor switched to `IOptions<AbrOptions>` — unwraps to plain `AbrOptions` at construction; tests updated to use `Options.Create(...)`
 - `Program.cs` — `AddHttpClient()`, `Configure<AbrOptions>("ABR")`, `AddSingleton<IVerificationProvider, AbrProvider>()`
 - `VerificationController` — `GET /verify?name=&country=`; routes by `SupportedCountries`; 200 (results or `[]`), 400 (validation), 404 (unsupported country)
+- `VerificationControllerTests` — 4 tests: unsupported country (404), match found, no matches (200 empty), invalid input (400); `CompanyVerification.Api` project reference added to test project (ASP.NET Core framework ref flows transitively)
 
 ---
 

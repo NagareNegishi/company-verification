@@ -6,9 +6,12 @@ namespace CompanyVerification.Tests;
 
 public sealed class VerificationControllerTests
 {
+    // set SupportedCountries and SearchResult per test.
     private sealed class StubProvider : IVerificationProvider
     {
         public IReadOnlyList<string> SupportedCountries { get; init; } = [];
+
+        // returns candidates or throws ArgumentException.
         public Func<Task<IReadOnlyList<CompanyCandidate>>> SearchResult { get; init; } =
             () => Task.FromResult<IReadOnlyList<CompanyCandidate>>([]);
 
