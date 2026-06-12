@@ -64,6 +64,16 @@ public sealed class VerificationControllerTests
     [Fact]
     public async Task Search_InvalidInput_ReturnsBadRequest()
     {
-        throw new NotImplementedException();
+        var controller = new VerificationController(
+            [new StubProvider
+            {
+                SupportedCountries = ["AU"],
+                SearchResult = () => throw new ArgumentException("Name must not exceed 200 characters.")
+            }]);
+
+        var result = await controller.Search(new string('A', 201), "AU", CancellationToken.None);
+
+        var bad = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Contains("200 characters", bad.Value?.ToString());
     }
 }
