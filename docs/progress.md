@@ -5,7 +5,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: NZBN adapter — tests and wiring remaining
+## Status: NZBN adapter — wiring remaining
 
 ---
 
@@ -24,6 +24,7 @@ and decisions made along the way. Update this file as work progresses.
 - `NzbnResponse.cs` — `NzbnSearchResponse` + `NzbnEntity`; maps `nzbn`, `entityName`, `entityStatusCode`, `entityTypeCode` via `[JsonPropertyName]`
 - `NzbnOptions.cs` — typed config; binds to `NZBN__SubscriptionKey`
 - `NzbnProvider.cs` — single HTTP call via `GetFromJsonAsync`; filters via `NzbnFilter`; maps to `CompanyCandidate`
+- `NzbnProviderTests.cs` — test suite complete
 
 ### Established patterns (follow for NZBN)
 
@@ -37,9 +38,8 @@ and decisions made along the way. Update this file as work progresses.
 
 ### NZBN adapter — tests and wiring
 
-1. Test suite — xUnit, same structure as `AbrProviderTests.cs`
-2. Fill `conformance.yaml` — active statuses and entity type list
-3. Register in `Program.cs` — DI wiring
+1. Fill `conformance.yaml` — active statuses and entity type list
+2. Register in `Program.cs` — DI wiring
 
 ---
 
