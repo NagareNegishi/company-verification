@@ -70,4 +70,27 @@ public sealed class NzbnProviderTests
 
         Assert.Empty(results);
     }
+
+    [Fact]
+    public async Task Search_InactiveStatusCode_ReturnsEmpty()
+    {
+        // status code "10" = removed — not in NzbnFilter.ActiveStatusCodes
+        var json = """
+            {
+              "items": [
+                {
+                  "nzbn": "9429041234567",
+                  "entityName": "Defunct Limited",
+                  "entityStatusCode": "10",
+                  "entityTypeCode": "NZCompany"
+                }
+              ]
+            }
+            """;
+
+        var provider = MakeProvider(json);
+        var results  = await provider.Search("Defunct", "NZ");
+
+        Assert.Empty(results);
+    }
 }
