@@ -5,11 +5,26 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: NZBN adapter — wiring remaining
+## Status: NuGet publish preparation — complete; ready to tag and publish (branch: `feat/nuget-publish`)
 
 ---
 
 ## Completed
+
+### NuGet publish preparation (branch: `feat/nuget-publish`)
+
+- `CompanyVerificationOptions.cs` — combined options object; one property per adapter; scales as adapters are added
+- `ServiceCollectionExtensions.cs` — `AddCompanyVerification(Action<CompanyVerificationOptions>)` in `Microsoft.Extensions.DependencyInjection` namespace
+- `OptionsWarningService.cs` — `IHostedService` that logs a warning at startup for any missing credential; app continues running
+- `AbrOptions`, `NzbnOptions` — dropped `required`, added `string.Empty` defaults; warning service covers the runtime check
+- `Microsoft.Extensions.Hosting.Abstractions` added to Core (needed for `IHostedService` in a plain class library)
+- `Program.cs` updated to use `AddCompanyVerification()` — manual wiring lines removed
+- `CompanyVerification.Core.csproj` — NuGet package metadata added (all DO fields from best practices)
+- `.github/workflows/publish.yml` — Trusted Publishing workflow; triggers on `v*` tags; uses `NuGet/login@v1` OIDC action
+- nuget.org Trusted Publisher policy configured for `NagareNegishi/company-verification`
+- `docs/adding-an-adapter.md` — checklist for new adapter authors
+- `docs/nuget-publish-research.md` — package metadata values and DI decisions
+- README Usage section updated with `AddCompanyVerification()` example
 
 ### NZBN adapter — setup and compliance
 
@@ -36,10 +51,12 @@ and decisions made along the way. Update this file as work progresses.
 
 ## Next
 
-### NZBN adapter — tests and wiring
+### Publish `CompanyVerification.Core` to NuGet.org
 
-1. Fill `conformance.yaml` — active statuses and entity type list
-2. Register in `Program.cs` — DI wiring
+1. Merge `feat/nuget-publish` to `main`
+2. Push tag `v0.1.0-alpha` — triggers the publish workflow
+3. Verify package appears on nuget.org
+4. Email `account@nuget.org` to reserve the `CompanyVerification` prefix
 
 ---
 
@@ -65,3 +82,6 @@ and decisions made along the way. Update this file as work progresses.
 | NZBN API access | Subscription key only | Read-only public data; OAuth2 not needed |
 | NZBN development environment | Sandbox first | Sandbox key available immediately after approval; switch to production key once tested |
 | NZBN adapter folder | `Core/Providers/Nz/` | Groups all country adapters under `Providers/`; isolates NZ-specific types and HTTP logic |
+| DI extension method shape | Single `Action<CompanyVerificationOptions>` | Per-adapter methods don't scale past 2-3 adapters; combined options object adds one property per new adapter with no call site changes |
+| Missing credentials behaviour | Log warning at startup, continue running | Hard failure on startup rejected; operators need to know the app is misconfigured without a crash blocking other functionality |
+| Options `required` keyword | Removed from options classes | `required` is compile-time only; options binding via reflection bypasses it; `OptionsWarningService` covers the runtime check |

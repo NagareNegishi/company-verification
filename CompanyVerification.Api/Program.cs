@@ -1,16 +1,12 @@
 using CompanyVerification.Core;
-using CompanyVerification.Core.Providers.Au;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddHttpClient();
-
-// reads ABR__Guid from env
-builder.Services.Configure<AbrOptions>(builder.Configuration.GetSection("ABR"));
-
-// routing layer picks the right adapter at runtime
-builder.Services.AddSingleton<IVerificationProvider, AbrProvider>();
+builder.Services.AddCompanyVerification(o =>
+{
+    o.Abr.Guid = builder.Configuration["ABR__Guid"] ?? string.Empty;
+    o.Nzbn.SubscriptionKey = builder.Configuration["NZBN__SubscriptionKey"] ?? string.Empty;
+});
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();

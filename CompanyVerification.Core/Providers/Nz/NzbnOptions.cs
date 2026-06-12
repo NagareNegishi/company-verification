@@ -11,5 +11,5 @@ public class NzbnOptions
     /// <see href="https://portal.api.business.govt.nz"/>.
     /// Do not commit this value to source control.
     /// </summary>
-    public required string SubscriptionKey { get; init; }
+    public string SubscriptionKey { get; set; } = string.Empty;
 }

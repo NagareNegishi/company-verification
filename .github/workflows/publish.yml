@@ -1,0 +1,36 @@
+name: Publish NuGet package
+
+on:
+  push:
+    tags:
+      - 'v*'  # triggers on version tags e.g. v0.1.0-alpha
+
+permissions:
+  id-token: write  # required for OIDC token exchange with nuget.org
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    # install .NET 10 — not pre-installed on the runner
+    - uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0'
+
+    # build and pack the Core library into a .nupkg
+    - name: Pack
+      run: dotnet pack CompanyVerification.Core --configuration Release
+
+    # exchange the GitHub OIDC token for a short-lived nuget.org API key (valid 1 hour)
+    - name: NuGet Login
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: NagareNegishi
+
+    # push the .nupkg using the temporary API key
+    - name: Push package
+      run: dotnet nuget push ./CompanyVerification.Core/bin/Release/*.nupkg --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://www.nuget.org/api/v2/package
