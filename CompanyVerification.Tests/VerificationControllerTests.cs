@@ -51,7 +51,14 @@ public sealed class VerificationControllerTests
     [Fact]
     public async Task Search_NoMatches_ReturnsOkWithEmptyList()
     {
-        throw new NotImplementedException();
+        var controller = new VerificationController(
+            [new StubProvider { SupportedCountries = ["AU"] }]);
+
+        var result = await controller.Search("Unknown Co", "AU", CancellationToken.None);
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var results = Assert.IsAssignableFrom<IReadOnlyList<CompanyCandidate>>(ok.Value);
+        Assert.Empty(results);
     }
 
     [Fact]
