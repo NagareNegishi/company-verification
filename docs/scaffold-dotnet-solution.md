@@ -69,9 +69,10 @@ Adds each `.csproj` path into `CompanyVerification.slnx` so IDEs and `dotnet bui
 ```
 dotnet add CompanyVerification.Api     reference CompanyVerification.Core
 dotnet add CompanyVerification.Tests   reference CompanyVerification.Core
+dotnet add CompanyVerification.Tests   reference CompanyVerification.Api
 ```
 
-Tells the compiler that `Api` and `Tests` depend on `Core`.
+`Api` and `Tests` depend on `Core`. `Tests` also references `Api` to test controllers directly.
 `Api` does NOT reference `Tests` — tests are never a runtime dependency.
 → Official: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-add-reference
 
