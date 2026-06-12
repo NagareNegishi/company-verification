@@ -109,4 +109,17 @@ public sealed class NzbnProviderTests
 
         Assert.Empty(results);
     }
+
+    [Fact]
+    public async Task Search_CancelledToken_Throws()
+    {
+        var provider = MakeProvider(json: "");
+
+        // token is already cancelled before Search is called
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => provider.Search("Acme", "NZ", cts.Token));
+    }
 }
