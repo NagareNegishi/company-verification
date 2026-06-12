@@ -4,14 +4,15 @@ using System.Text;
 namespace CompanyVerification.Tests;
 
 /// <summary>
-/// Fake HTTP handler for ABR adapter tests. Intercepts outgoing HTTP calls and
-/// returns preset XML based on the URL path. Throws for any URL not recognised.
+/// Fake HTTP handler for adapter tests. Intercepts outgoing HTTP calls and
+/// returns preset responses based on the URL path. Throws for any URL not recognised.
 /// </summary>
 internal sealed class FakeHttpHandler : DelegatingHandler
 {
     private readonly string? _nameSearchXml;
     private readonly string? _abnLookupXml;
     private readonly Func<string, string>? _abnLookupResolver;
+    private readonly string? _json;
 
     /// <param name="nameSearchXml">
     /// XML to return for <c>ABRSearchByNameAdvancedSimpleProtocol2017</c> requests.
@@ -36,6 +37,14 @@ internal sealed class FakeHttpHandler : DelegatingHandler
     {
         _nameSearchXml     = nameSearchXml;
         _abnLookupResolver = abnLookupResolver;
+    }
+
+    /// <param name="json">
+    /// JSON to return for NZBN entity search requests.
+    /// </param>
+    public FakeHttpHandler(string json)
+    {
+        _json = json;
     }
 
     /// <inheritdoc/>
