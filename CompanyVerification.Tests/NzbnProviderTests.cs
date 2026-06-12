@@ -21,4 +21,30 @@ public sealed class NzbnProviderTests
         var factory = new StubHttpClientFactory(client);
         return new NzbnProvider(factory, Options.Create(new NzbnOptions { SubscriptionKey = "test-key" }));
     }
+
+    [Fact]
+    public async Task Search_ActiveCompany_ReturnsCandidate()
+    {
+        // entity search returns one registered company
+        var json = """
+            {
+              "items": [
+                {
+                  "nzbn": "9429041234567",
+                  "entityName": "Acme Limited",
+                  "entityStatusCode": "50",
+                  "entityTypeCode": "NZCompany"
+                }
+              ]
+            }
+            """;
+
+        var provider = MakeProvider(json);
+        var results  = await provider.Search("Acme", "NZ");
+
+        Assert.Single(results);
+        Assert.Equal("9429041234567", results[0].RegistryId);
+        Assert.Equal("Acme Limited",  results[0].Name);
+        Assert.Equal("NZ",            results[0].Country);
+    }
 }
