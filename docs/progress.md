@@ -5,11 +5,27 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: NZBN adapter — wiring remaining
+## Status: NuGet publish preparation — in progress (branch: `feat/nuget-publish`)
 
 ---
 
 ## Completed
+
+### NuGet publish preparation (partial — branch: `feat/nuget-publish`)
+
+- `CompanyVerificationOptions.cs` — combined options object; one property per adapter; scales as adapters are added
+- `ServiceCollectionExtensions.cs` — `AddCompanyVerification(Action<CompanyVerificationOptions>)` in `Microsoft.Extensions.DependencyInjection` namespace
+- `OptionsWarningService.cs` — `IHostedService` that logs a warning at startup for any missing credential; app continues running
+- `AbrOptions`, `NzbnOptions` — dropped `required`, added `string.Empty` defaults; warning service covers the runtime check
+- `Microsoft.Extensions.Hosting.Abstractions` added to Core (needed for `IHostedService` in a plain class library)
+- `docs/adding-an-adapter.md` — checklist for new adapter authors
+- `docs/nuget-publish-research.md` — package metadata values and DI decisions
+- README Usage section updated with `AddCompanyVerification()` example
+
+### Still to do on this branch
+
+- Add package metadata to `CompanyVerification.Core.csproj`
+- Update `Program.cs` to use `AddCompanyVerification()` (removes the manual wiring lines)
 
 ### NZBN adapter — setup and compliance
 
@@ -36,10 +52,10 @@ and decisions made along the way. Update this file as work progresses.
 
 ## Next
 
-### NZBN adapter — tests and wiring
+### NuGet publish preparation
 
-1. Fill `conformance.yaml` — active statuses and entity type list
-2. Register in `Program.cs` — DI wiring
+1. Add package metadata to `CompanyVerification.Core.csproj`
+2. Update `Program.cs` to use `AddCompanyVerification()`
 
 ---
 
@@ -65,3 +81,6 @@ and decisions made along the way. Update this file as work progresses.
 | NZBN API access | Subscription key only | Read-only public data; OAuth2 not needed |
 | NZBN development environment | Sandbox first | Sandbox key available immediately after approval; switch to production key once tested |
 | NZBN adapter folder | `Core/Providers/Nz/` | Groups all country adapters under `Providers/`; isolates NZ-specific types and HTTP logic |
+| DI extension method shape | Single `Action<CompanyVerificationOptions>` | Per-adapter methods don't scale past 2-3 adapters; combined options object adds one property per new adapter with no call site changes |
+| Missing credentials behaviour | Log warning at startup, continue running | Hard failure on startup rejected; operators need to know the app is misconfigured without a crash blocking other functionality |
+| Options `required` keyword | Removed from options classes | `required` is compile-time only; options binding via reflection bypasses it; `OptionsWarningService` covers the runtime check |
