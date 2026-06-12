@@ -38,19 +38,16 @@ The .NET convention for library authors: extension method on `IServiceCollection
 
 Source: [Options pattern guidance for .NET library authors](https://learn.microsoft.com/en-us/dotnet/core/extensions/options-library-authors)
 
-## Decision: one method or one per adapter
+## Decision: combined options object
+
+A single `Action<CompanyVerificationOptions>` parameter. Each adapter gets a nested property on `CompanyVerificationOptions` (`Abr`, `Nzbn`, ...). Adding a new adapter adds one property — the call site stays the same shape.
 
 ```csharp
-// Option A: combined
-services.AddCompanyVerification(
-    abr: o => o.Guid = "...",
-    nzbn: o => o.SubscriptionKey = "...");
-
-// Option B: per adapter
-services.AddAbrProvider(o => o.Guid = "...");
-services.AddNzbnProvider(o => o.SubscriptionKey = "...");
+services.AddCompanyVerification(o =>
+{
+    o.Abr.Guid = "...";
+    o.Nzbn.SubscriptionKey = "...";
+});
 ```
 
-Option B follows how ASP.NET Core composes features (e.g. `AddAuthentication().AddJwtBearer()`). It lets a consumer use only one adapter without pulling in the other's options. Option A is simpler when both adapters are always used together.
-
-Given the project is MVP with exactly two adapters always deployed together, Option A is the simpler starting point.
+Per-adapter methods (`AddAbrProvider`, `AddNzbnProvider`) were considered but rejected: they require callers to remember each method as adapters grow, and they don't scale cleanly past two or three adapters.
