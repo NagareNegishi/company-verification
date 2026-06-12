@@ -1,6 +1,6 @@
 @CompanyVerification.Api_HostAddress = http://localhost:5212
 
-GET {{CompanyVerification.Api_HostAddress}}/weatherforecast/
+GET {{CompanyVerification.Api_HostAddress}}/verify?name=Acme&country=AU
 Accept: application/json
 
 ###

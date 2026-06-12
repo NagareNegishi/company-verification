@@ -1,5 +1,6 @@
 using CompanyVerification.Core.Providers.Au;
 using Microsoft.Extensions.Http;
+using Microsoft.Extensions.Options;
 
 namespace CompanyVerification.Tests;
 
@@ -19,7 +20,7 @@ public sealed class AbrProviderTests
         var handler = new FakeHttpHandler(nameSearchXml, abnLookupResolver);
         var client  = new HttpClient(handler);
         var factory = new StubHttpClientFactory(client);
-        return new AbrProvider(factory, new AbrOptions { Guid = "test-guid" });
+        return new AbrProvider(factory, Options.Create(new AbrOptions { Guid = "test-guid" }));
     }
 
     // overload for tests with a single fixed ABN lookup response
@@ -29,7 +30,7 @@ public sealed class AbrProviderTests
         // routes all HttpClient calls through the fake handler instead of the network
         var client  = new HttpClient(handler);
         var factory = new StubHttpClientFactory(client);
-        return new AbrProvider(factory, new AbrOptions { Guid = "test-guid" });
+        return new AbrProvider(factory, Options.Create(new AbrOptions { Guid = "test-guid" }));
     }
 
     [Fact]

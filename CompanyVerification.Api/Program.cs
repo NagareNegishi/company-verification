@@ -1,9 +1,18 @@
+using CompanyVerification.Core;
+using CompanyVerification.Core.Providers.Au;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpClient();
+
+// reads ABR__Guid from env
+builder.Services.Configure<AbrOptions>(builder.Configuration.GetSection("ABR"));
+
+// routing layer picks the right adapter at runtime
+builder.Services.AddSingleton<IVerificationProvider, AbrProvider>();
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var app = builder.Build();

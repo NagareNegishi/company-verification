@@ -72,7 +72,7 @@ Validation lives in the contract so it applies regardless of transport (HTTP, li
 
 **Adapter filtering rules (enforced, not optional):**
 - Filter out non-active statuses before returning — only legally alive entities appear in results.
-- Filter out non-company entity types before returning — sole traders, partnerships, trusts, and similar are excluded. The purpose is company verification; these types are unlikely to be posting jobs.
+- Filter out non-company entity types before returning. What counts as a "company type" varies by registry — some adapters include partnerships, trusts, or government bodies; others do not. Each adapter declares its inclusions and exclusions in its conformance YAML.
 - What counts as "active" and what counts as a "company type" is the adapter's decision, but it must be explicitly declared in the adapter's conformance declaration (see Conformance suite below).
 
 **Other design rules:**
@@ -189,5 +189,5 @@ Zero-cost hosting. Cold start is a known, accepted tradeoff — documented here,
 ## Open decisions (summary)
 
 - Whether/when to expose this service as an MCP server.
-- Config/secrets contract for per-deployment adapter credentials — direction agreed, details undrafted.
+- Config/secrets contract for per-deployment adapter credentials — pattern established: `IOptions<T>` per adapter, env vars with `__` section separator, root `.env.example` as the developer setup file. Each new adapter adds its own key to the root file.
 - YAML declaration schema — structure agreed, formal schema not yet written.
