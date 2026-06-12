@@ -122,4 +122,35 @@ public sealed class NzbnProviderTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(
             () => provider.Search("Acme", "NZ", cts.Token));
     }
+
+    [Fact]
+    public async Task Search_MultipleEntities_ReturnsAllCandidates()
+    {
+        // entity search returns two registered companies
+        var json = """
+            {
+              "items": [
+                {
+                  "nzbn": "9429041234567",
+                  "entityName": "Acme Limited",
+                  "entityStatusCode": "50",
+                  "entityTypeCode": "NZCompany"
+                },
+                {
+                  "nzbn": "9429049876543",
+                  "entityName": "Acme Holdings Limited",
+                  "entityStatusCode": "50",
+                  "entityTypeCode": "NZCompany"
+                }
+              ]
+            }
+            """;
+
+        var provider = MakeProvider(json);
+        var results  = await provider.Search("Acme", "NZ");
+
+        Assert.Equal(2, results.Count);
+        Assert.Contains(results, r => r.RegistryId == "9429041234567" && r.Name == "Acme Limited");
+        Assert.Contains(results, r => r.RegistryId == "9429049876543" && r.Name == "Acme Holdings Limited");
+    }
 }
