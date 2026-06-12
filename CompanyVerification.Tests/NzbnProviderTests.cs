@@ -153,4 +153,34 @@ public sealed class NzbnProviderTests
         Assert.Contains(results, r => r.RegistryId == "9429041234567" && r.Name == "Acme Limited");
         Assert.Contains(results, r => r.RegistryId == "9429049876543" && r.Name == "Acme Holdings Limited");
     }
+
+    [Fact]
+    public async Task Search_MixedEntityTypes_ReturnsOnlyIncluded()
+    {
+        // two registered entities — one company, one sole trader
+        var json = """
+            {
+              "items": [
+                {
+                  "nzbn": "9429041234567",
+                  "entityName": "Acme Limited",
+                  "entityStatusCode": "50",
+                  "entityTypeCode": "NZCompany"
+                },
+                {
+                  "nzbn": "9429049876543",
+                  "entityName": "Acme Trading",
+                  "entityStatusCode": "50",
+                  "entityTypeCode": "SoleTrader"
+                }
+              ]
+            }
+            """;
+
+        var provider = MakeProvider(json);
+        var results  = await provider.Search("Acme", "NZ");
+
+        Assert.Single(results);
+        Assert.Equal("9429041234567", results[0].RegistryId);
+    }
 }
