@@ -31,7 +31,21 @@ public sealed class VerificationControllerTests
     [Fact]
     public async Task Search_MatchFound_ReturnsOkWithCandidates()
     {
-        throw new NotImplementedException();
+        var candidate = new CompanyCandidate("12345678901", "Acme Pty Ltd", "AU");
+
+        var controller = new VerificationController(
+            [new StubProvider
+            {
+                SupportedCountries = ["AU"],
+                SearchResult = () => Task.FromResult<IReadOnlyList<CompanyCandidate>>([candidate])
+            }]);
+
+        var result = await controller.Search("Acme", "AU", CancellationToken.None);
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var results = Assert.IsAssignableFrom<IReadOnlyList<CompanyCandidate>>(ok.Value);
+        Assert.Single(results);
+        Assert.Equal("12345678901", results[0].RegistryId);
     }
 
     [Fact]
