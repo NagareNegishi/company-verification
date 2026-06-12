@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CompanyVerification.Core\CompanyVerification.Core.csproj" />
+    <ProjectReference Include="..\CompanyVerification.Api\CompanyVerification.Api.csproj" />
   </ItemGroup>
 
 </Project>
