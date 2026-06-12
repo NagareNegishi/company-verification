@@ -5,27 +5,26 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: NuGet publish preparation — in progress (branch: `feat/nuget-publish`)
+## Status: NuGet publish preparation — complete; ready to tag and publish (branch: `feat/nuget-publish`)
 
 ---
 
 ## Completed
 
-### NuGet publish preparation (partial — branch: `feat/nuget-publish`)
+### NuGet publish preparation (branch: `feat/nuget-publish`)
 
 - `CompanyVerificationOptions.cs` — combined options object; one property per adapter; scales as adapters are added
 - `ServiceCollectionExtensions.cs` — `AddCompanyVerification(Action<CompanyVerificationOptions>)` in `Microsoft.Extensions.DependencyInjection` namespace
 - `OptionsWarningService.cs` — `IHostedService` that logs a warning at startup for any missing credential; app continues running
 - `AbrOptions`, `NzbnOptions` — dropped `required`, added `string.Empty` defaults; warning service covers the runtime check
 - `Microsoft.Extensions.Hosting.Abstractions` added to Core (needed for `IHostedService` in a plain class library)
+- `Program.cs` updated to use `AddCompanyVerification()` — manual wiring lines removed
+- `CompanyVerification.Core.csproj` — NuGet package metadata added (all DO fields from best practices)
+- `.github/workflows/publish.yml` — Trusted Publishing workflow; triggers on `v*` tags; uses `NuGet/login@v1` OIDC action
+- nuget.org Trusted Publisher policy configured for `NagareNegishi/company-verification`
 - `docs/adding-an-adapter.md` — checklist for new adapter authors
 - `docs/nuget-publish-research.md` — package metadata values and DI decisions
 - README Usage section updated with `AddCompanyVerification()` example
-
-### Still to do on this branch
-
-- Add package metadata to `CompanyVerification.Core.csproj`
-- Update `Program.cs` to use `AddCompanyVerification()` (removes the manual wiring lines)
 
 ### NZBN adapter — setup and compliance
 
@@ -52,10 +51,12 @@ and decisions made along the way. Update this file as work progresses.
 
 ## Next
 
-### NuGet publish preparation
+### Publish `CompanyVerification.Core` to NuGet.org
 
-1. Add package metadata to `CompanyVerification.Core.csproj`
-2. Update `Program.cs` to use `AddCompanyVerification()`
+1. Merge `feat/nuget-publish` to `main`
+2. Push tag `v0.1.0-alpha` — triggers the publish workflow
+3. Verify package appears on nuget.org
+4. Email `account@nuget.org` to reserve the `CompanyVerification` prefix
 
 ---
 
