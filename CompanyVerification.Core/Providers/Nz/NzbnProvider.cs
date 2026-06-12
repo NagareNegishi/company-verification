@@ -1,3 +1,4 @@
+using System.Net.Http.Json;
 using Microsoft.Extensions.Options;
 
 namespace CompanyVerification.Core.Providers.Nz;
@@ -39,5 +40,11 @@ public sealed class NzbnProvider : VerificationProviderBase
         var response = await http.GetFromJsonAsync<NzbnSearchResponse>(url, cancellationToken);
         if (response is null)
             return [];
+
+        return response.Items
+            .Where(e => NzbnFilter.ActiveStatusCodes.Contains(e.EntityStatusCode))
+            .Where(e => NzbnFilter.IncludedEntityTypes.Contains(e.EntityTypeCode))
+            .Select(e => new CompanyCandidate(e.Nzbn, e.EntityName, "NZ"))
+            .ToList();
     }
 }
