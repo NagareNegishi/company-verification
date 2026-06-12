@@ -47,4 +47,27 @@ public sealed class NzbnProviderTests
         Assert.Equal("Acme Limited",  results[0].Name);
         Assert.Equal("NZ",            results[0].Country);
     }
+
+    [Fact]
+    public async Task Search_ExcludedEntityType_ReturnsEmpty()
+    {
+        // SoleTrader = excluded — no separate legal identity
+        var json = """
+            {
+              "items": [
+                {
+                  "nzbn": "9429041234567",
+                  "entityName": "John Smith",
+                  "entityStatusCode": "50",
+                  "entityTypeCode": "SoleTrader"
+                }
+              ]
+            }
+            """;
+
+        var provider = MakeProvider(json);
+        var results  = await provider.Search("John", "NZ");
+
+        Assert.Empty(results);
+    }
 }
