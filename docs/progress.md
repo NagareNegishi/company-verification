@@ -5,102 +5,38 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: AU adapter — coding in progress
+## Status: NZBN adapter — coding in progress
 
 ---
 
 ## Completed
 
-### Bootstrap
-- Dev container created and opened (`.devcontainer/`)
-- Claude config in place (`.claude/settings.json`, `CLAUDE.md`)
-- Firewall script in place (`.devcontainer/project-firewall.sh`)
-- `LICENSE` (AGPL 3.0) committed
-- `.gitignore` in place
+### NZBN adapter — setup and compliance
 
-### Core contract
+- `api.business.govt.nz` added to firewall allowlist; sandbox key obtained
+- `NzbnFilter.cs` — active status codes and included entity type codes
+- `NzbnTermsTemplate.cs` — MBIE ToS clause (clause 4.11); verified against API Access Agreement PDF
+- `conformance.yaml` — empty placeholder; fill before adapter ships
+- README — NZBN credentials notice added (clause 7.7)
 
-- `CompanyCandidate` — sealed record with `RegistryId`, `Name`, `Country`, optional `AdditionalFields`
-- `IVerificationProvider` — interface with `Search(name, country, cancellationToken)` and `SupportedCountries` for adapter self-declaration and generic routing
-- `VerificationProviderBase` — abstract base class; owns `Search()` (validates, normalises, delegates to `SearchCore()`); adapters implement `SearchCore()`
-- Input validation enforced in the contract layer: name (not null/whitespace, max 200 chars, no control characters, no angle brackets, Unicode allowed); country (ISO 3166-1 alpha-2, case-insensitive, normalised to uppercase)
-- Boilerplate deleted: `Class1.cs`, `WeatherForecast.cs`, `WeatherForecastController.cs`, `UnitTest1.cs`
-- Decision docs: `docs/decisions/company-candidate.md`, `docs/decisions/core-contract.md`
-- `dotnet build` passes clean across all three projects
+### Established patterns (follow for NZBN)
 
-### .NET Solution scaffold
-- Solution: `CompanyVerification.slnx` (`.NET 10` default format)
-- Projects created and linked:
-  - `CompanyVerification.Core` — classlib
-  - `CompanyVerification.Api` — webapi with controllers
-  - `CompanyVerification.Tests` — xunit
-- `Api` and `Tests` reference `Core`
-- `dotnet build` passes — all three projects compile clean
-
-### NZBN adapter — in progress
-
-- `api.business.govt.nz` added to `.devcontainer/project-firewall.sh` firewall allowlist
-- NZBN API registration submitted at `portal.api.business.govt.nz` — sandbox key pending approval (up to one working day)
-- Decision doc updated: `docs/decisions/nzbn-api.md` now includes verified registration steps and sandbox/production base URLs
-
-### NZBN adapter — compliance prep
-
-- `CompanyVerification.Core/Providers/Nz/` folder created
-- `NzbnFilter.cs` — entity status and entity type allowlists; source links to Procuret/nzbn-python
-- `NzbnTermsTemplate.cs` — MBIE ToS clause verified line-by-line against the actual API Access Agreement PDF (November 2022); Schedule 1 excluded website categories used verbatim
-- `Providers/Nz/.env.example` — placeholder for `NZBN_SUBSCRIPTION_KEY`; marked not finalised
-- `conformance.yaml` — empty placeholder; to be filled before adapter is complete
-- `.gitignore` updated: `docs/decisions/MBIE/*.pdf` added
-- MBIE API Access Agreement PDF (`docs/decisions/MBIE/`) read and verified; gitignored
-
-### AU adapter — pre-coding setup
-
-- ABR Web Services Agreement read and verified; compliance docs complete (`docs/decisions/ABR/`)
-- `abr.business.gov.au` added to `.devcontainer/project-firewall.sh` firewall allowlist
-- API endpoint confirmed: `https://abr.business.gov.au/abrxmlsearch/AbrXmlSearch.asmx/ABRSearchByNameAdvancedSimpleProtocol2017` (HTTP GET, returns XML)
-- Issue draft created: `.github/drafts/issue-draft.md`
-- `AbrFilter.cs` — included entity type codes; active filtering is server-side via `activeABNsOnly=Y`
-- `conformance.yaml` — AU entity types declared; no status codes; no `additional_fields`
-
-### AU adapter — coding
-
-- `README.md` — ABR GUID registration notice added (A3 from `ABR_Compliance_For_My_App.md`)
-- `AbrProvider.cs` — `SearchCore` complete: call-2 parallel lookups via `Task.WhenAll`, `ParseAbnLookupResult` parses entity type and name, `AbrFilter` drops excluded types
-- No separate `AbrResponse.cs` or `AbrClient.cs` — XML parsing and HTTP calls absorbed directly into `AbrProvider`
-- `Microsoft.Extensions.Http` added to `Core.csproj` via `dotnet package add` — required for `IHttpClientFactory`
-
-### AU adapter — tests (pure logic)
-
-- `VerificationProviderBaseTests.cs` — 12 tests passing: name validation (null, whitespace, too long, control character, angle bracket), country validation (null, empty, wrong length, non-letter), normalisation (name trimmed, country uppercased)
-
-### AU adapter — tests (HTTP logic)
-
-- `FakeHttpHandler.cs` — `DelegatingHandler` that intercepts HTTP calls; dispatches by URL substring; supports single fixed response or per-ABN resolver (`Func<string, string>`)
-- `AbrProviderTests.cs` — 7 tests: active company returned, excluded entity type filtered, no ABNs from name search, ABN lookup missing entity, cancelled token throws, multiple ABNs all returned, mixed entity types with partial filtering
-
-### Config pattern
-
-- Adapter credentials use `IOptions<T>` per adapter; env vars use `__` as section separator (`NZBN__SubscriptionKey`, `ABR__Guid`)
-- Root `.env.example` created — single file a developer copies on first setup; aggregates all adapter keys
-- Per-adapter `.env.example` files updated: marked reference-only, point to root `.env.example`, key names updated to match .NET convention
-- `docker-compose.yml` updated: `version: '3.8'` removed (deprecated); `env_file: ../.env` added with `required: false` (Docker Compose v2.24.0+)
-- `.env` must live at project root (not `.devcontainer/`); existing `.devcontainer/.env` should be moved to project root
-
-### API wiring — AU adapter
-
-- `AbrProvider` constructor switched to `IOptions<AbrOptions>` — unwraps to plain `AbrOptions` at construction; tests updated to use `Options.Create(...)`
-- `Program.cs` — `AddHttpClient()`, `Configure<AbrOptions>("ABR")`, `AddSingleton<IVerificationProvider, AbrProvider>()`
-- `VerificationController` — `GET /verify?name=&country=`; routes by `SupportedCountries`; 200 (results or `[]`), 400 (validation), 404 (unsupported country)
-- `VerificationControllerTests` — 4 tests: unsupported country (404), match found, no matches (200 empty), invalid input (400); `CompanyVerification.Api` project reference added to test project (ASP.NET Core framework ref flows transitively)
+- Config: `IOptions<T>` per adapter; env vars use `__` separator (e.g. `NZBN__SubscriptionKey`)
+- Testing: `FakeHttpHandler` intercepts HTTP; see `AbrProviderTests.cs` for test structure
+- DI: `AddSingleton<IVerificationProvider, NzbnProvider>()` in `Program.cs`
 
 ---
 
 ## Next
 
-### Remaining items before NZBN coding starts
+### NZBN adapter coding
 
-1. **A3 README notice** — add the library user credentials warning (clause 7.7): users must supply their own NZBN key; register at `portal.api.business.govt.nz`; sign the MBIE API Access Agreement
-2. **Verify PDF not tracked** — `docs/decisions/MBIE/*.pdf` is gitignored but if the file was staged before the rule was added, run `git rm --cached` to untrack it
+1. `NzbnResponse.cs` — model the NZBN JSON response
+2. Fill `conformance.yaml` — active statuses and entity type list
+3. `NzbnOptions.cs` — typed config for the subscription key
+4. `NzbnProvider.cs` — extend `VerificationProviderBase`; filter via `NzbnFilter`
+5. Test suite — xUnit, same structure as `AbrProviderTests.cs`
+6. Register in `Program.cs` — DI wiring
 
 ---
 
