@@ -1,4 +1,5 @@
 using System.Xml.Linq;
+using Microsoft.Extensions.Options;
 
 namespace CompanyVerification.Core.Providers.Au;
 
@@ -31,11 +32,11 @@ public sealed class AbrProvider : VerificationProviderBase
     /// </param>
     public AbrProvider(
         IHttpClientFactory httpClientFactory,
-        AbrOptions options,
+        IOptions<AbrOptions> options,
         AbrNameSearchRequest? nameSearch = null)
     {
         _httpClientFactory = httpClientFactory;
-        _options = options;
+        _options = options.Value;
         _nameSearch = nameSearch ?? new AbrNameSearchRequest();
         _abnLookup = new AbrAbnLookupRequest();
     }
