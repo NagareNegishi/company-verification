@@ -22,7 +22,7 @@ The key used during development of this library cannot be shared or redistribute
 Steps:
 1. Register at [portal.api.business.govt.nz](https://portal.api.business.govt.nz)
 2. Sign the MBIE API Access Agreement
-3. Set the key in your environment as `NZBN_SUBSCRIPTION_KEY`
+3. Set the key in your environment as `NZBN__SubscriptionKey`
 
 Never commit your key to source control.
 
@@ -40,7 +40,7 @@ Never commit your GUID to source control.
 
 ## Status
 
-Early development. New Zealand (NZBN) is the primary target. Australia (ABR) is planned as a native adapter. Countries without a native adapter return "unsupported".
+New Zealand (NZBN) and Australia (ABR) are both available as native adapters. Countries without a native adapter return "unsupported".
 
 ## Stack
 
