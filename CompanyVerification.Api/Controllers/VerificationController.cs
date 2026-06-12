@@ -34,7 +34,7 @@ public sealed class VerificationController : ControllerBase
         try
         {
             var results = await provider.Search(name, country, cancellationToken);
-            return Ok(results); // empty list is a valid result, not a 404
+            return Ok(results); // empty list is a valid result
         }
         catch (ArgumentException ex)
         {
