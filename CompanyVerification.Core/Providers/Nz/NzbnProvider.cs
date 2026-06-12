@@ -31,6 +31,13 @@ public sealed class NzbnProvider : VerificationProviderBase
     protected override async Task<IReadOnlyList<CompanyCandidate>> SearchCore(
         string name, string country, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var http = _httpClientFactory.CreateClient();
+        http.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _options.SubscriptionKey);
+
+        var url = $"{BaseUrl}/entities?search-term={Uri.EscapeDataString(name)}&entity-status=registered&page-size={PageSize}";
+
+        var response = await http.GetFromJsonAsync<NzbnSearchResponse>(url, cancellationToken);
+        if (response is null)
+            return [];
     }
 }
