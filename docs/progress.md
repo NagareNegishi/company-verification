@@ -5,7 +5,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: NZBN adapter — coding in progress
+## Status: NZBN adapter — tests and wiring remaining
 
 ---
 
@@ -19,6 +19,12 @@ and decisions made along the way. Update this file as work progresses.
 - `conformance.yaml` — empty placeholder; fill before adapter ships
 - README — NZBN credentials notice added (clause 7.7)
 
+### NZBN adapter — coding
+
+- `NzbnResponse.cs` — `NzbnSearchResponse` + `NzbnEntity`; maps `nzbn`, `entityName`, `entityStatusCode`, `entityTypeCode` via `[JsonPropertyName]`
+- `NzbnOptions.cs` — typed config; binds to `NZBN__SubscriptionKey`
+- `NzbnProvider.cs` — single HTTP call via `GetFromJsonAsync`; filters via `NzbnFilter`; maps to `CompanyCandidate`
+
 ### Established patterns (follow for NZBN)
 
 - Config: `IOptions<T>` per adapter; env vars use `__` separator (e.g. `NZBN__SubscriptionKey`)
@@ -29,14 +35,11 @@ and decisions made along the way. Update this file as work progresses.
 
 ## Next
 
-### NZBN adapter coding
+### NZBN adapter — tests and wiring
 
-1. `NzbnResponse.cs` — model the NZBN JSON response
+1. Test suite — xUnit, same structure as `AbrProviderTests.cs`
 2. Fill `conformance.yaml` — active statuses and entity type list
-3. `NzbnOptions.cs` — typed config for the subscription key
-4. `NzbnProvider.cs` — extend `VerificationProviderBase`; filter via `NzbnFilter`
-5. Test suite — xUnit, same structure as `AbrProviderTests.cs`
-6. Register in `Program.cs` — DI wiring
+3. Register in `Program.cs` — DI wiring
 
 ---
 
