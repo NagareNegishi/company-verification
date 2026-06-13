@@ -4,7 +4,10 @@
 # Without it, replace {{$dotenv NZBN__SubscriptionKey}} with your key directly.
 
 @key = {{$dotenv NZBN__SubscriptionKey}}
-@baseUrl = https://api.business.govt.nz/sandbox/nzbn/v5
+@baseUrl = https://api.business.govt.nz/gateway/nzbn/v5
+
+# sandbox version
+# https://api.business.govt.nz/sandbox/nzbn/v5
 
 # Change @name to test different searches
 @name = Microsoft
