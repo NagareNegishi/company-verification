@@ -5,7 +5,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: CompanyVerification.Core 0.1.0-alpha published to NuGet.org — validation in progress
+## Status: CompanyVerification.Core 0.1.0-alpha live on NuGet.org — Source Link and .snupkg support added, pending next release tag
 
 ---
 
@@ -33,7 +33,7 @@ and decisions made along the way. Update this file as work progresses.
 - `api.business.govt.nz` added to firewall allowlist; sandbox key obtained
 - `NzbnFilter.cs` — active status codes and included entity type codes
 - `NzbnTermsTemplate.cs` — MBIE ToS clause (clause 4.11); verified against API Access Agreement PDF
-- `conformance.yaml` — empty placeholder; fill before adapter ships
+- `conformance.yaml` — complete; active status codes, included entity types, and additional fields declared
 - README — NZBN credentials notice added (clause 7.7)
 
 ### NZBN adapter — coding
@@ -55,6 +55,7 @@ and decisions made along the way. Update this file as work progresses.
 
 - Email `account@nuget.org` to reserve the `CompanyVerification` prefix (cosmetic — verified checkmark)
 - `PackageIcon` — blocked on having a 128x128 PNG; wiring is ready to add once the file exists
+- Deploy `CompanyVerification.Api` to Render free tier
 
 ---
 
