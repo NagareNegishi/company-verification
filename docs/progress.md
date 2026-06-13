@@ -25,6 +25,8 @@ and decisions made along the way. Update this file as work progresses.
 - `docs/adding-an-adapter.md` — checklist for new adapter authors
 - `docs/nuget-publish-research.md` — package metadata values and DI decisions
 - README Usage section updated with `AddCompanyVerification()` example
+- `CompanyVerification.Core.csproj` — `PublishRepositoryUrl`, `IncludeSymbols`, `SymbolPackageFormat=snupkg` added; Source Link active via .NET 10 SDK (no package reference needed)
+- `.github/workflows/publish.yml` — `Push symbols` step added; pushes `.snupkg` to nuget.org symbol server via V3 API
 
 ### NZBN adapter — setup and compliance
 
@@ -52,6 +54,7 @@ and decisions made along the way. Update this file as work progresses.
 ## Next
 
 - Email `account@nuget.org` to reserve the `CompanyVerification` prefix (cosmetic — verified checkmark)
+- `PackageIcon` — blocked on having a 128x128 PNG; wiring is ready to add once the file exists
 
 ---
 
