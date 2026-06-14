@@ -4,8 +4,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCompanyVerification(o =>
 {
-    o.Abr.Guid = builder.Configuration["ABR__Guid"] ?? string.Empty;
-    o.Nzbn.SubscriptionKey = builder.Configuration["NZBN__SubscriptionKey"] ?? string.Empty;
+    o.Abr.Guid = builder.Configuration["ABR:Guid"] ?? string.Empty;
+    o.Nzbn.SubscriptionKey = builder.Configuration["Nzbn:SubscriptionKey"] ?? string.Empty;
 });
 
 builder.Services.AddControllers();
