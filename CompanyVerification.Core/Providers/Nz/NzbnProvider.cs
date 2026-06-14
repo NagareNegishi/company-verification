@@ -52,7 +52,7 @@ public sealed class NzbnProvider : VerificationProviderBase
                 "NZ",
                 new Dictionary<string, string>
                 {
-                    ["source_register"] = e.SourceRegister,
+                    ["source_register"] = "NZBN",
                     ["searched_at"]     = searchedAt
                 }))
             .ToList();
