@@ -33,7 +33,7 @@ JSON array of matching companies. An empty array means no match was found. It is
     "name": "Spark New Zealand Trading Limited",
     "country": "NZ",
     "additionalFields": {
-      "source_register": "Companies Register",
+      "source_register": "NZBN",
       "searched_at": "2026-06-15T00:00:00+00:00"
     }
   }
