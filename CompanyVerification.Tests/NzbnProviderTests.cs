@@ -33,7 +33,8 @@ public sealed class NzbnProviderTests
                   "nzbn": "9429041234567",
                   "entityName": "Acme Limited",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "NZCompany"
+                  "entityTypeCode": "NZCompany",
+                  "sourceRegister": "Companies Register"
                 }
               ]
             }
@@ -43,9 +44,11 @@ public sealed class NzbnProviderTests
         var results  = await provider.Search("Acme", "NZ");
 
         Assert.Single(results);
-        Assert.Equal("9429041234567", results[0].RegistryId);
-        Assert.Equal("Acme Limited",  results[0].Name);
-        Assert.Equal("NZ",            results[0].Country);
+        Assert.Equal("9429041234567",      results[0].RegistryId);
+        Assert.Equal("Acme Limited",       results[0].Name);
+        Assert.Equal("NZ",                 results[0].Country);
+        Assert.Equal("Companies Register", results[0].AdditionalFields!["source_register"]);
+        Assert.True(results[0].AdditionalFields!.ContainsKey("searched_at"));
     }
 
     [Fact]
