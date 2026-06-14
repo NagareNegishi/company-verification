@@ -62,6 +62,11 @@ and decisions made along the way. Update this file as work progresses.
 
 - Email `account@nuget.org` to reserve the `CompanyVerification` prefix (cosmetic — verified checkmark)
 - `PackageIcon` — blocked on having a 128x128 PNG; wiring is ready to add once the file exists
+- **NZBN `additionalFields` fix** (new branch) — conformance.yaml declares `source_register` and `searched_at` as required by MBIE clause 4.8, but the adapter never populates them. Three files to change:
+  - `NzbnResponse.cs` — add `[property: JsonPropertyName("sourceRegister")] string SourceRegister` to `NzbnEntity`
+  - `NzbnProvider.cs` — capture `DateTimeOffset.Now.ToString("yyyy-MM-ddTHH:mm:sszzz")` before the HTTP call as `searchedAt`; pass `new Dictionary<string, string> { ["source_register"] = e.SourceRegister, ["searched_at"] = searchedAt }` as the fourth argument to `CompanyCandidate` in the `Select`
+  - `NzbnProviderTests.cs` — add `"sourceRegister": "Companies Register"` to every JSON fixture that has items; extend `Search_ActiveCompany_ReturnsCandidate` to assert `results[0].AdditionalFields!["source_register"] == "Companies Register"` and `results[0].AdditionalFields!.ContainsKey("searched_at")`
+  - `docs/api-reference.md` — update the `additionalFields` row: for NZ, `source_register` and `searched_at` are always present (not null)
 
 ---
 
