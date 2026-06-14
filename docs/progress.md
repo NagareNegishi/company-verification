@@ -5,11 +5,18 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: CompanyVerification.Core 0.1.0-alpha live on NuGet.org — Source Link and .snupkg support added, pending next release tag
+## Status: CompanyVerification.Core 0.1.0-alpha live on NuGet.org. API deployment to Render configured; deploys automatically on merge to main.
 
 ---
 
 ## Completed
+
+### Render deployment (branch: `feat/nuget-publish`)
+
+- `Dockerfile` — multi-stage build; SDK image to compile, aspnet runtime image for the container; layer caching on restore
+- `Program.cs` — `UseHttpsRedirection()` moved inside `IsDevelopment()`; Render terminates TLS at the proxy
+- `.github/workflows/deploy.yml` — runs `dotnet test` on push to main; Render auto-deploys when check passes
+- Render dashboard — `NZBN__SubscriptionKey` and `ABR__Guid` set; Auto-Deploy set to "After CI Checks Pass"
 
 ### NuGet publish preparation (branch: `feat/nuget-publish`)
 
@@ -55,7 +62,6 @@ and decisions made along the way. Update this file as work progresses.
 
 - Email `account@nuget.org` to reserve the `CompanyVerification` prefix (cosmetic — verified checkmark)
 - `PackageIcon` — blocked on having a 128x128 PNG; wiring is ready to add once the file exists
-- Deploy `CompanyVerification.Api` to Render free tier
 
 ---
 
