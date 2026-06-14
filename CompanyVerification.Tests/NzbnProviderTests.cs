@@ -33,8 +33,7 @@ public sealed class NzbnProviderTests
                   "nzbn": "9429041234567",
                   "entityName": "Acme Limited",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "NZCompany",
-                  "sourceRegister": "Companies Register"
+                  "entityTypeCode": "NZCompany"
                 }
               ]
             }
@@ -47,7 +46,7 @@ public sealed class NzbnProviderTests
         Assert.Equal("9429041234567",      results[0].RegistryId);
         Assert.Equal("Acme Limited",       results[0].Name);
         Assert.Equal("NZ",                 results[0].Country);
-        Assert.Equal("Companies Register", results[0].AdditionalFields!["source_register"]);
+        Assert.Equal("NZBN", results[0].AdditionalFields!["source_register"]);
         Assert.True(results[0].AdditionalFields!.ContainsKey("searched_at"));
     }
 
@@ -62,8 +61,7 @@ public sealed class NzbnProviderTests
                   "nzbn": "9429041234567",
                   "entityName": "John Smith",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "SoleTrader",
-                  "sourceRegister": "Companies Register"
+                  "entityTypeCode": "SoleTrader"
                 }
               ]
             }
@@ -86,8 +84,7 @@ public sealed class NzbnProviderTests
                   "nzbn": "9429041234567",
                   "entityName": "Defunct Limited",
                   "entityStatusCode": "10",
-                  "entityTypeCode": "NZCompany",
-                  "sourceRegister": "Companies Register"
+                  "entityTypeCode": "NZCompany"
                 }
               ]
             }
@@ -139,15 +136,13 @@ public sealed class NzbnProviderTests
                   "nzbn": "9429041234567",
                   "entityName": "Acme Limited",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "NZCompany",
-                  "sourceRegister": "Companies Register"
+                  "entityTypeCode": "NZCompany"
                 },
                 {
                   "nzbn": "9429049876543",
                   "entityName": "Acme Holdings Limited",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "NZCompany",
-                  "sourceRegister": "Companies Register"
+                  "entityTypeCode": "NZCompany"
                 }
               ]
             }
@@ -172,15 +167,13 @@ public sealed class NzbnProviderTests
                   "nzbn": "9429041234567",
                   "entityName": "Acme Limited",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "NZCompany",
-                  "sourceRegister": "Companies Register"
+                  "entityTypeCode": "NZCompany"
                 },
                 {
                   "nzbn": "9429049876543",
                   "entityName": "Acme Trading",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "SoleTrader",
-                  "sourceRegister": "Companies Register"
+                  "entityTypeCode": "SoleTrader"
                 }
               ]
             }
