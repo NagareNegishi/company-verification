@@ -62,11 +62,13 @@ and decisions made along the way. Update this file as work progresses.
 
 - Email `account@nuget.org` to reserve the `CompanyVerification` prefix (cosmetic — verified checkmark)
 - `PackageIcon` — blocked on having a 128x128 PNG; wiring is ready to add once the file exists
-- **NZBN `additionalFields` fix** (new branch) — conformance.yaml declares `source_register` and `searched_at` as required by MBIE clause 4.8, but the adapter never populates them. Three files to change:
-  - `NzbnResponse.cs` — add `[property: JsonPropertyName("sourceRegister")] string SourceRegister` to `NzbnEntity`
-  - `NzbnProvider.cs` — capture `DateTimeOffset.Now.ToString("yyyy-MM-ddTHH:mm:sszzz")` before the HTTP call as `searchedAt`; pass `new Dictionary<string, string> { ["source_register"] = e.SourceRegister, ["searched_at"] = searchedAt }` as the fourth argument to `CompanyCandidate` in the `Select`
-  - `NzbnProviderTests.cs` — add `"sourceRegister": "Companies Register"` to every JSON fixture that has items; extend `Search_ActiveCompany_ReturnsCandidate` to assert `results[0].AdditionalFields!["source_register"] == "Companies Register"` and `results[0].AdditionalFields!.ContainsKey("searched_at")`
-  - `docs/api-reference.md` — update the `additionalFields` row: for NZ, `source_register` and `searched_at` are always present (not null)
+- **NZBN `additionalFields` fix** (branch: `api/wire`) — partial work done; needs corrections before merge. Files to fix:
+  - `NzbnResponse.cs` — revert `SourceRegister` addition; the NZBN API does not return a `sourceRegister` field (confirmed from live response and open-source library inspection)
+  - `NzbnProvider.cs` — `searchedAt` capture and `AdditionalFields` dict are correct; change `["source_register"] = e.SourceRegister` to `["source_register"] = "NZBN"`
+  - `NzbnProviderTests.cs` — remove `"sourceRegister"` from all fixtures; update assertion to `Assert.Equal("NZBN", results[0].AdditionalFields!["source_register"])`
+  - `conformance.yaml` — change `source_register` entry: `source: adapter`; update description to "Always \"NZBN\"; the adapter serves the NZBN Register"
+  - `docs/api-reference.md` — already updated; verify example JSON shows `"source_register": "NZBN"`
+  - `docs/decisions/MBIE/MBIE_Compliance_For_My_App.md` — correct A2 note: `[Register name]` does not come from the API response; hardcode `"NZBN"` per adapter
 
 ---
 
@@ -88,6 +90,7 @@ and decisions made along the way. Update this file as work progresses.
 | Adapter priority | API layer's concern, not the adapter's | Adapters declare which countries they handle; which adapter wins for a given country is decided at the composition root, not inside the adapter |
 | Adapter config | `IOptions<T>` per adapter, root `.env` | Standard .NET pattern; env vars use `__` separator; root `.env.example` is the developer setup file; per-adapter files are reference only |
 | Fallback availability | Optional — service deploys without it | Missing credentials: startup warning, fallback countries return "unsupported". Invalid credentials: startup alert, same runtime behaviour. Native adapters unaffected either way |
+| `source_register` value | Hardcoded `"NZBN"` per adapter | NZBN API does not return a register name field. Schedule 2 obligation (clause 4.8) is on the Customer Site (frontend), not this API. Adapter name is the correct and stable value. |
 | Name search flexibility | Partial names accepted | Registries handle case-insensitive substring matching; typo tolerance is not provided |
 | NZBN API access | Subscription key only | Read-only public data; OAuth2 not needed |
 | NZBN development environment | Sandbox first | Sandbox key available immediately after approval; switch to production key once tested |
