@@ -43,9 +43,11 @@ public sealed class NzbnProviderTests
         var results  = await provider.Search("Acme", "NZ");
 
         Assert.Single(results);
-        Assert.Equal("9429041234567", results[0].RegistryId);
-        Assert.Equal("Acme Limited",  results[0].Name);
-        Assert.Equal("NZ",            results[0].Country);
+        Assert.Equal("9429041234567",      results[0].RegistryId);
+        Assert.Equal("Acme Limited",       results[0].Name);
+        Assert.Equal("NZ",                 results[0].Country);
+        Assert.Equal("NZBN", results[0].AdditionalFields!["source_register"]);
+        Assert.True(results[0].AdditionalFields!.ContainsKey("searched_at"));
     }
 
     [Fact]

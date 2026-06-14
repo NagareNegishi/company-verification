@@ -52,9 +52,13 @@ included_entity_types:
 additional_fields:
 
   source_register:
-    source: api_response
+    source: adapter
     type: string
-    description: Source register name as returned by the NZBN API (e.g. "Companies Register")
+    description: >
+      Always "NZBN". The NZBN API does not return a register name field.
+      The adapter hardcodes this value because it knows which register it
+      serves. Consumed by the frontend to render the clause 4.8 attribution
+      line: "Data sourced from NZBN — searched [timestamp]".
     required_by: MBIE API Access Agreement clause 4.8
 
   searched_at:

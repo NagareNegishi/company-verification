@@ -27,7 +27,7 @@ Render wherever raw register fields are shown (legal name, NZBN, status, registr
 
 > Data sourced from the [Register name] — searched [DD/MM/YYYY HH:MM NZ time]
 
-- `[Register name]` = the source-register value the API returns (e.g. "Companies Register", "NZBN Register"). Don't hardcode it.
+- `[Register name]` = the `source_register` value from `additionalFields`. For NZ, this is always `"NZBN"` — the NZBN API does not return a register name field, so the adapter hardcodes it. Each adapter declares its own value; read it from the response rather than hardcoding it in the frontend.
 - Timestamp = time of the actual search, not page load.
 - Text only — no MBIE/NZBN logos.
 

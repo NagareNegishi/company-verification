@@ -9,48 +9,7 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Completed
-
-### Render deployment (branch: `feat/nuget-publish`)
-
-- `Dockerfile` — multi-stage build; SDK image to compile, aspnet runtime image for the container; layer caching on restore
-- `Program.cs` — `UseHttpsRedirection()` moved inside `IsDevelopment()`; Render terminates TLS at the proxy
-- `.github/workflows/deploy.yml` — runs `dotnet test` on push to main; Render auto-deploys when check passes
-- Render dashboard — `NZBN__SubscriptionKey` and `ABR__Guid` set; Auto-Deploy set to "After CI Checks Pass"
-
-### NuGet publish preparation (branch: `feat/nuget-publish`)
-
-- `CompanyVerificationOptions.cs` — combined options object; one property per adapter; scales as adapters are added
-- `ServiceCollectionExtensions.cs` — `AddCompanyVerification(Action<CompanyVerificationOptions>)` in `Microsoft.Extensions.DependencyInjection` namespace
-- `OptionsWarningService.cs` — `IHostedService` that logs a warning at startup for any missing credential; app continues running
-- `AbrOptions`, `NzbnOptions` — dropped `required`, added `string.Empty` defaults; warning service covers the runtime check
-- `Microsoft.Extensions.Hosting.Abstractions` added to Core (needed for `IHostedService` in a plain class library)
-- `Program.cs` updated to use `AddCompanyVerification()` — manual wiring lines removed
-- `CompanyVerification.Core.csproj` — NuGet package metadata added (all DO fields from best practices)
-- `.github/workflows/publish.yml` — Trusted Publishing workflow; triggers on `v*` tags; uses `NuGet/login@v1` OIDC action
-- nuget.org Trusted Publisher policy configured for `NagareNegishi/company-verification`
-- `docs/adding-an-adapter.md` — checklist for new adapter authors
-- `docs/nuget-publish-research.md` — package metadata values and DI decisions
-- README Usage section updated with `AddCompanyVerification()` example
-- `CompanyVerification.Core.csproj` — `PublishRepositoryUrl`, `IncludeSymbols`, `SymbolPackageFormat=snupkg` added; Source Link active via .NET 10 SDK (no package reference needed)
-- `.github/workflows/publish.yml` — `Push symbols` step added; pushes `.snupkg` to nuget.org symbol server via V3 API
-
-### NZBN adapter — setup and compliance
-
-- `api.business.govt.nz` added to firewall allowlist; sandbox key obtained
-- `NzbnFilter.cs` — active status codes and included entity type codes
-- `NzbnTermsTemplate.cs` — MBIE ToS clause (clause 4.11); verified against API Access Agreement PDF
-- `conformance.yaml` — complete; active status codes, included entity types, and additional fields declared
-- README — NZBN credentials notice added (clause 7.7)
-
-### NZBN adapter — coding
-
-- `NzbnResponse.cs` — `NzbnSearchResponse` + `NzbnEntity`; maps `nzbn`, `entityName`, `entityStatusCode`, `entityTypeCode` via `[JsonPropertyName]`
-- `NzbnOptions.cs` — typed config; binds to `NZBN__SubscriptionKey`
-- `NzbnProvider.cs` — single HTTP call via `GetFromJsonAsync`; filters via `NzbnFilter`; maps to `CompanyCandidate`
-- `NzbnProviderTests.cs` — test suite complete
-
-### Established patterns (follow for NZBN)
+### Established patterns (follow for new adapters)
 
 - Config: `IOptions<T>` per adapter; env vars use `__` separator (e.g. `NZBN__SubscriptionKey`)
 - Testing: `FakeHttpHandler` intercepts HTTP; see `AbrProviderTests.cs` for test structure
@@ -62,11 +21,6 @@ and decisions made along the way. Update this file as work progresses.
 
 - Email `account@nuget.org` to reserve the `CompanyVerification` prefix (cosmetic — verified checkmark)
 - `PackageIcon` — blocked on having a 128x128 PNG; wiring is ready to add once the file exists
-- **NZBN `additionalFields` fix** (new branch) — conformance.yaml declares `source_register` and `searched_at` as required by MBIE clause 4.8, but the adapter never populates them. Three files to change:
-  - `NzbnResponse.cs` — add `[property: JsonPropertyName("sourceRegister")] string SourceRegister` to `NzbnEntity`
-  - `NzbnProvider.cs` — capture `DateTimeOffset.Now.ToString("yyyy-MM-ddTHH:mm:sszzz")` before the HTTP call as `searchedAt`; pass `new Dictionary<string, string> { ["source_register"] = e.SourceRegister, ["searched_at"] = searchedAt }` as the fourth argument to `CompanyCandidate` in the `Select`
-  - `NzbnProviderTests.cs` — add `"sourceRegister": "Companies Register"` to every JSON fixture that has items; extend `Search_ActiveCompany_ReturnsCandidate` to assert `results[0].AdditionalFields!["source_register"] == "Companies Register"` and `results[0].AdditionalFields!.ContainsKey("searched_at")`
-  - `docs/api-reference.md` — update the `additionalFields` row: for NZ, `source_register` and `searched_at` are always present (not null)
 
 ---
 
@@ -88,6 +42,7 @@ and decisions made along the way. Update this file as work progresses.
 | Adapter priority | API layer's concern, not the adapter's | Adapters declare which countries they handle; which adapter wins for a given country is decided at the composition root, not inside the adapter |
 | Adapter config | `IOptions<T>` per adapter, root `.env` | Standard .NET pattern; env vars use `__` separator; root `.env.example` is the developer setup file; per-adapter files are reference only |
 | Fallback availability | Optional — service deploys without it | Missing credentials: startup warning, fallback countries return "unsupported". Invalid credentials: startup alert, same runtime behaviour. Native adapters unaffected either way |
+| `source_register` value | Hardcoded `"NZBN"` per adapter | NZBN API does not return a register name field. Schedule 2 obligation (clause 4.8) is on the Customer Site (frontend), not this API. Adapter name is the correct and stable value. |
 | Name search flexibility | Partial names accepted | Registries handle case-insensitive substring matching; typo tolerance is not provided |
 | NZBN API access | Subscription key only | Read-only public data; OAuth2 not needed |
 | NZBN development environment | Sandbox first | Sandbox key available immediately after approval; switch to production key once tested |
