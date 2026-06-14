@@ -27,8 +27,5 @@ public sealed record NzbnEntity(
     string EntityStatusCode,
     /// <summary>Entity type code. Compared against <see cref="NzbnFilter.IncludedEntityTypes"/>.</summary>
     [property: JsonPropertyName("entityTypeCode")]
-    string EntityTypeCode,
-    /// <summary>Name of the source register.</summary>
-    [property: JsonPropertyName("sourceRegister")]
-    string SourceRegister
+    string EntityTypeCode
 );
