@@ -11,7 +11,7 @@ COPY CompanyVerification.Core/ CompanyVerification.Core/
 RUN dotnet publish CompanyVerification.Api/CompanyVerification.Api.csproj \
     -c Release -o /app/publish --no-restore
 
-# Runtime image only (~200 MB vs ~750 MB for the SDK image)
+# Runtime image only
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /app/publish .
