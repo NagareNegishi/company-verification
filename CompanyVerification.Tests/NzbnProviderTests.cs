@@ -62,7 +62,8 @@ public sealed class NzbnProviderTests
                   "nzbn": "9429041234567",
                   "entityName": "John Smith",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "SoleTrader"
+                  "entityTypeCode": "SoleTrader",
+                  "sourceRegister": "Companies Register"
                 }
               ]
             }
@@ -85,7 +86,8 @@ public sealed class NzbnProviderTests
                   "nzbn": "9429041234567",
                   "entityName": "Defunct Limited",
                   "entityStatusCode": "10",
-                  "entityTypeCode": "NZCompany"
+                  "entityTypeCode": "NZCompany",
+                  "sourceRegister": "Companies Register"
                 }
               ]
             }
@@ -137,13 +139,15 @@ public sealed class NzbnProviderTests
                   "nzbn": "9429041234567",
                   "entityName": "Acme Limited",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "NZCompany"
+                  "entityTypeCode": "NZCompany",
+                  "sourceRegister": "Companies Register"
                 },
                 {
                   "nzbn": "9429049876543",
                   "entityName": "Acme Holdings Limited",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "NZCompany"
+                  "entityTypeCode": "NZCompany",
+                  "sourceRegister": "Companies Register"
                 }
               ]
             }
@@ -168,13 +172,15 @@ public sealed class NzbnProviderTests
                   "nzbn": "9429041234567",
                   "entityName": "Acme Limited",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "NZCompany"
+                  "entityTypeCode": "NZCompany",
+                  "sourceRegister": "Companies Register"
                 },
                 {
                   "nzbn": "9429049876543",
                   "entityName": "Acme Trading",
                   "entityStatusCode": "50",
-                  "entityTypeCode": "SoleTrader"
+                  "entityTypeCode": "SoleTrader",
+                  "sourceRegister": "Companies Register"
                 }
               ]
             }
