@@ -38,6 +38,11 @@ Steps:
 
 Never commit your key to source control.
 
+When showing NZ results to end users, MBIE's API Access Agreement (clause 4.8) requires an attribution line wherever raw register fields appear:
+
+> Data sourced from [source_register] — searched [searched_at]
+
+
 ## ABR API credentials
 
 To use the Australian adapter you must supply your own ABR GUID.
