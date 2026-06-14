@@ -37,6 +37,8 @@ public sealed class NzbnProvider : VerificationProviderBase
 
         var url = $"{BaseUrl}/entities?search-term={Uri.EscapeDataString(name)}&entity-status=registered&page-size={PageSize}";
 
+        var searchedAt = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz"); // ISO 8601 with UTC offset
+
         var response = await http.GetFromJsonAsync<NzbnSearchResponse>(url, cancellationToken);
         if (response is null)
             return [];
@@ -44,7 +46,15 @@ public sealed class NzbnProvider : VerificationProviderBase
         return response.Items
             .Where(e => NzbnFilter.ActiveStatusCodes.Contains(e.EntityStatusCode))
             .Where(e => NzbnFilter.IncludedEntityTypes.Contains(e.EntityTypeCode))
-            .Select(e => new CompanyCandidate(e.Nzbn, e.EntityName, "NZ"))
+            .Select(e => new CompanyCandidate(
+                e.Nzbn,
+                e.EntityName,
+                "NZ",
+                new Dictionary<string, string>
+                {
+                    ["source_register"] = e.SourceRegister,
+                    ["searched_at"]     = searchedAt
+                }))
             .ToList();
     }
 }
