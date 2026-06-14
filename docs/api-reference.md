@@ -45,7 +45,7 @@ JSON array of matching companies. An empty array means no match was found. It is
 | `registryId` | string | Registry-native ID. 13-digit NZBN for NZ; 11-digit ABN for AU. |
 | `name` | string | Registered legal name. |
 | `country` | string | Uppercase ISO 3166-1 alpha-2 code of the source registry. |
-| `additionalFields` | object or null | Registry-specific key-value pairs. For NZ: always contains `source_register` and `searched_at`. For AU: null. |
+| `additionalFields` | object or null | Registry-specific key-value pairs; `null` if the adapter sets none. AU: `null`. NZ: `source_register` (always `"NZBN"`) and `searched_at` (ISO 8601 timestamp of the search). Future adapters may add their own keys. |
 
 ### Error responses
 
