@@ -19,6 +19,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>company verification nz au nzbn abr business registry employer employment</PackageTags>
     <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

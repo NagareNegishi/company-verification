@@ -34,3 +34,7 @@ jobs:
     # push the .nupkg using the temporary API key
     - name: Push package
       run: dotnet nuget push ./CompanyVerification.Core/bin/Release/*.nupkg --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://www.nuget.org/api/v2/package
+
+    # push the .snupkg to nuget.org symbol server (V3 API required for symbol packages)
+    - name: Push symbols
+      run: dotnet nuget push ./CompanyVerification.Core/bin/Release/*.snupkg --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json

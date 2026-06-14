@@ -20,11 +20,13 @@ All values to set in `CompanyVerification.Core.csproj`:
 | `RepositoryType` | `git` | |
 | `PackageTags` | `company verification nz au nzbn abr business registry` | |
 | `PackageReleaseNotes` | `Initial release.` | |
+| `PublishRepositoryUrl` | `true` | Embeds repo URL and commit SHA in the .nupkg manifest |
+| `IncludeSymbols` | `true` | Generates a .snupkg alongside the .nupkg |
+| `SymbolPackageFormat` | `snupkg` | Required; nuget.org symbol server only accepts .snupkg |
 
 ## Do later
 
 - `PackageIcon` — add a 128x128 transparent PNG asset, then set `PackageIcon` in the `.csproj`.
-- Source Link — add `Microsoft.SourceLink.GitHub` package reference; auto-populates `RepositoryUrl` and per-commit metadata.
 - `PackageVersion` via `Version` prefix reservation — no nuget.org account set up yet.
 
 ## DO NOT

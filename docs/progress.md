@@ -5,11 +5,18 @@ and decisions made along the way. Update this file as work progresses.
 
 ---
 
-## Status: NuGet publish preparation — complete; ready to tag and publish (branch: `feat/nuget-publish`)
+## Status: CompanyVerification.Core 0.1.0-alpha live on NuGet.org. API deployment to Render configured; deploys automatically on merge to main.
 
 ---
 
 ## Completed
+
+### Render deployment (branch: `feat/nuget-publish`)
+
+- `Dockerfile` — multi-stage build; SDK image to compile, aspnet runtime image for the container; layer caching on restore
+- `Program.cs` — `UseHttpsRedirection()` moved inside `IsDevelopment()`; Render terminates TLS at the proxy
+- `.github/workflows/deploy.yml` — runs `dotnet test` on push to main; Render auto-deploys when check passes
+- Render dashboard — `NZBN__SubscriptionKey` and `ABR__Guid` set; Auto-Deploy set to "After CI Checks Pass"
 
 ### NuGet publish preparation (branch: `feat/nuget-publish`)
 
@@ -25,13 +32,15 @@ and decisions made along the way. Update this file as work progresses.
 - `docs/adding-an-adapter.md` — checklist for new adapter authors
 - `docs/nuget-publish-research.md` — package metadata values and DI decisions
 - README Usage section updated with `AddCompanyVerification()` example
+- `CompanyVerification.Core.csproj` — `PublishRepositoryUrl`, `IncludeSymbols`, `SymbolPackageFormat=snupkg` added; Source Link active via .NET 10 SDK (no package reference needed)
+- `.github/workflows/publish.yml` — `Push symbols` step added; pushes `.snupkg` to nuget.org symbol server via V3 API
 
 ### NZBN adapter — setup and compliance
 
 - `api.business.govt.nz` added to firewall allowlist; sandbox key obtained
 - `NzbnFilter.cs` — active status codes and included entity type codes
 - `NzbnTermsTemplate.cs` — MBIE ToS clause (clause 4.11); verified against API Access Agreement PDF
-- `conformance.yaml` — empty placeholder; fill before adapter ships
+- `conformance.yaml` — complete; active status codes, included entity types, and additional fields declared
 - README — NZBN credentials notice added (clause 7.7)
 
 ### NZBN adapter — coding
@@ -51,12 +60,8 @@ and decisions made along the way. Update this file as work progresses.
 
 ## Next
 
-### Publish `CompanyVerification.Core` to NuGet.org
-
-1. Merge `feat/nuget-publish` to `main`
-2. Push tag `v0.1.0-alpha` — triggers the publish workflow
-3. Verify package appears on nuget.org
-4. Email `account@nuget.org` to reserve the `CompanyVerification` prefix
+- Email `account@nuget.org` to reserve the `CompanyVerification` prefix (cosmetic — verified checkmark)
+- `PackageIcon` — blocked on having a 128x128 PNG; wiring is ready to add once the file exists
 
 ---
 
